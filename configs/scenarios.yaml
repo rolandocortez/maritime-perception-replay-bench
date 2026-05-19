@@ -1,0 +1,99 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+
+scenario_set:
+  name: "maritime_replay_core_scenarios"
+  purpose: "Define clean, hard and degraded replay cases for future demo, metrics and fault injection."
+
+scenarios:
+  clean_replay:
+    type: "baseline"
+    enabled: true
+    description: "Clear maritime scene with visible vessels or objects."
+    purpose: "Baseline perception and runtime measurement."
+    expected_failure_modes:
+      - "None expected beyond normal detector misses."
+    future_use:
+      - "Replay smoke test"
+      - "Detector baseline"
+      - "Runtime metrics baseline"
+
+  small_targets:
+    type: "hard_visual_case"
+    enabled: true
+    description: "Small or distant boats, humans or floating objects if available."
+    purpose: "Expose recall limits and tracking fragmentation."
+    expected_failure_modes:
+      - "Missed detections"
+      - "Low-confidence detections"
+      - "Track fragmentation"
+      - "ID switches"
+    future_use:
+      - "Detection failure analysis"
+      - "Tracking robustness"
+      - "Annotation mining"
+
+  glare_reflections:
+    type: "hard_visual_case"
+    enabled: true
+    description: "Water reflections, sun glitter, wakes or horizon clutter."
+    purpose: "Expose false positives and maritime domain shift."
+    expected_failure_modes:
+      - "False positives on reflections"
+      - "False positives on wakes"
+      - "Unstable boxes near horizon"
+      - "Reduced confidence under glare"
+    future_use:
+      - "Maritime-specific failure slices"
+      - "Water prior evaluation"
+      - "Debug overlay examples"
+
+  degraded_frame_drop:
+    type: "synthetic_degradation"
+    enabled: true
+    description: "Synthetic frame drops introduced later."
+    purpose: "Field debugging and robustness."
+    degradation:
+      method: "drop_frames"
+      initial_drop_rate: 0.10
+      deterministic_seed: 42
+    expected_failure_modes:
+      - "Lower effective FPS"
+      - "Track fragmentation"
+      - "Stale detections"
+    future_use:
+      - "Fault injection"
+      - "Clean vs degraded benchmark"
+      - "Online metrics"
+
+  degraded_delay:
+    type: "synthetic_degradation"
+    enabled: true
+    description: "Synthetic sensor delay introduced later."
+    purpose: "Timestamp and end-to-end latency discussion."
+    degradation:
+      method: "delay_frames"
+      initial_delay_ms: 150
+      deterministic_seed: 42
+    expected_failure_modes:
+      - "Increased end-to-end latency"
+      - "Stale outputs"
+      - "Timing skew between topics"
+    future_use:
+      - "Timing diagnostics"
+      - "QoS discussion"
+      - "Field debugging demo"
+
+selection_rules:
+  prefer_short_clips: true
+  commit_video_files: false
+  keep_scenarios_reproducible: true
+  use_deterministic_faults: true
+  document_real_vs_synthetic_conditions: true
+
+demo_priority:
+  - "clean_replay"
+  - "small_targets"
+  - "glare_reflections"
+  - "degraded_frame_drop"
+  - "degraded_delay"
