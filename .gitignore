@@ -13,9 +13,7 @@ venv/
 .env
 
 # Local data / artifacts
-data/raw/
-data/interim/
-data/bags/
+data/
 artifacts/
 models/checkpoints/
 models/onnx/
