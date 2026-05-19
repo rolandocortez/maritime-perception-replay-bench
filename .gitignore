@@ -1,0 +1,26 @@
+# Private docs / notes
+docs/
+*.md
+!README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment
+.env
+
+# Local data / artifacts
+data/raw/
+data/interim/
+data/bags/
+artifacts/
+models/checkpoints/
+models/onnx/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
