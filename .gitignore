@@ -8,15 +8,43 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Environment
 .env
 
-# Local data / artifacts
-data/
-artifacts/
-models/checkpoints/
-models/onnx/
+# ROS2
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Local data
+data/raw/*
+data/interim/*
+data/samples/*
+data/bags/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/samples/.gitkeep
+!data/bags/.gitkeep
+
+# Artifacts
+artifacts/metrics/*
+artifacts/models/*
+artifacts/predictions/*
+artifacts/screenshots/*
+artifacts/manifests/*
+!artifacts/metrics/.gitkeep
+!artifacts/models/.gitkeep
+!artifacts/predictions/.gitkeep
+!artifacts/screenshots/.gitkeep
+!artifacts/manifests/.gitkeep
+
+# Reports generated locally
+reports/*
+!reports/.gitkeep
 
 # OS / editor
 .DS_Store
