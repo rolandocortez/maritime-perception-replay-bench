@@ -1,0 +1,16 @@
+[project]
+name = "maritime-perception-replay-bench"
+version = "0.1.0"
+description = "ROS2-based replay and debugging bench for maritime perception workflows."
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.py_compile]
+description = "Scripts are validated through Makefile targets."
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
