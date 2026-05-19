@@ -1,4 +1,4 @@
-version: "0.2"
+version: "0.3"
 project: "maritime-perception-replay-bench"
 
 ingest_strategy:
@@ -52,6 +52,33 @@ candidate_sources:
   - name: "MaSTr1325"
     role: "water_sky_obstacle_prior"
     status: "future_reference"
+
+acoustic_lane:
+  status: "optional_plugin"
+  core_mvp: false
+  decision: "Do not make acoustic data part of the core MVP."
+  reason: "The first goal is to build a stable vision-first ROS2 replay and evaluation spine. Acoustic streams can reuse the same timing, metrics, artifact and replay infrastructure later."
+  future_topics:
+    waveform: "/acoustic/waveform"
+    spectrogram: "/acoustic/spectrogram"
+    events: "/acoustic/events"
+  candidate_sources:
+    - name: "DeepShip"
+      role: "future vessel audio classification reference"
+      status: "future_reference"
+
+    - name: "ShipsEar"
+      role: "future vessel audio research reference"
+      status: "future_reference"
+
+    - name: "NOAA Passive Acoustic Data"
+      role: "future passive acoustic archive"
+      status: "future_reference"
+
+    - name: "SanctSound"
+      role: "future passive acoustic archive"
+      status: "future_reference"
+  interview_position: "The acoustic lane is intentionally kept as an extension point. The first goal is a reproducible replay and evaluation spine; once that is stable, an acoustic stream can use the same timing, artifact and metrics infrastructure."
 
 data_rules:
   commit_large_data: false
