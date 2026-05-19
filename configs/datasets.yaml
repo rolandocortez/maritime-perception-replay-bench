@@ -1,101 +1,60 @@
-version: "0.1"
-milestone: "H1"
+version: "0.2"
 project: "maritime-perception-replay-bench"
 
-decision_summary:
-  primary_visual: "singapore_maritime_dataset_or_fast_maritime_sample"
-  secondary_visual: "seadronessee"
-  maritime_prior: "mastr1325"
-  acoustic_lane: "optional_future_plugin"
+ingest_strategy:
+  level_0:
+    name: "single_sample_video"
+    purpose: "Fast path for validating the ROS2 replay spine."
+    status: "active"
+
+  level_1:
+    name: "small_curated_clip_set"
+    purpose: "Two or three representative maritime clips with manual metadata."
+    status: "planned"
+
+  level_2:
+    name: "curated_labeled_subset"
+    purpose: "Subset from a real dataset with labels for detector/tracker evaluation."
+    status: "future"
+
+  level_3:
+    name: "full_dataset_eval"
+    purpose: "Full dataset preparation and official evaluation path."
+    status: "future"
 
 primary_visual:
-  id: "singapore_maritime_dataset_or_fast_maritime_sample"
-  name: "Singapore Maritime Dataset or fast accessible maritime sample"
-  role: "primary_visual_replay"
+  name: "sample_maritime_video"
   type: "video"
-  target_path: "data/samples/harbor_sample.mp4"
+  path: "data/samples/harbor_sample.mp4"
   labels: null
-  status: "planned"
-  priority: 1
-  why: "Best fast path for ROS2 video replay and early pipeline development."
-  risks:
-    - "Need to review original dataset terms before redistribution."
-    - "Labels may not be immediately available for every clip."
-  next_action: "Find one small representative clip for H2 ingest."
+  fps_override: null
+  frame_id: "camera"
+  image_topic: "/camera/image_raw"
+  notes: "Initial fast path for ROS2 replay spine."
 
 secondary_visual:
-  id: "seadronessee"
-  name: "SeaDronesSee"
-  role: "detection_tracking_candidate"
-  type: "image_or_video_dataset"
-  target_path: "data/raw/seadronessee"
-  labels: "official_annotations_if_downloaded"
-  status: "candidate"
-  priority: 2
-  why: "Strong fit for maritime object detection, small objects, and tracking."
-  risks:
-    - "Download/prep may take longer than a simple video sample."
-    - "Terms must be reviewed before redistribution."
-  next_action: "Check access friction after the replay spine works."
+  name: "mastr1325_or_lars_subset"
+  type: "image_dataset"
+  path: "data/raw/secondary_visual"
+  labels: "data/labels/secondary_visual"
+  status: "optional"
+  notes: "Optional water/obstacle prior and maritime failure analysis."
 
-maritime_prior:
-  id: "mastr1325"
-  name: "MaSTr1325"
-  role: "water_sky_obstacle_prior"
-  type: "semantic_segmentation_dataset"
-  target_path: "data/raw/mastr1325"
-  labels: "pixelwise_semantic_labels"
-  status: "candidate"
-  priority: 3
-  why: "Useful lightweight reference for maritime water/sky/obstacle priors."
-  risks:
-    - "Not a detection/tracking dataset."
-    - "Terms must be reviewed before redistribution."
-  next_action: "Use later for water-prior notes or segmentation baseline."
+candidate_sources:
+  - name: "Singapore Maritime Dataset or accessible maritime sample"
+    role: "first replay source"
+    status: "preferred_initial_path"
 
-future_extensions:
-  - id: "lars"
-    name: "LaRS"
-    role: "future_panoptic_maritime_prior"
-    type: "panoptic_or_scene_segmentation"
-    status: "future"
-    why: "Potentially useful for richer maritime scene understanding."
-    risk: "Do not depend on it for MVP."
+  - name: "SeaDronesSee"
+    role: "detection_tracking_candidate"
+    status: "candidate_after_replay_works"
 
-  - id: "deepship"
-    name: "DeepShip"
-    role: "future_acoustic_lane"
-    type: "underwater_vessel_audio"
-    status: "future"
-    why: "Useful for future vessel audio classification experiments."
-    risk: "Do not present as validated visual-acoustic fusion."
+  - name: "MaSTr1325"
+    role: "water_sky_obstacle_prior"
+    status: "future_reference"
 
-  - id: "shipsear"
-    name: "ShipsEar"
-    role: "future_acoustic_research"
-    type: "underwater_vessel_audio"
-    status: "research_note_only"
-    why: "Useful reference for acoustic vessel noise."
-    risk: "Access/licensing and integration friction."
-
-  - id: "noaa_passive_acoustic"
-    name: "NOAA Passive Acoustic Data"
-    role: "future_soundscape_archive"
-    type: "passive_acoustic_archive"
-    status: "future"
-    why: "Useful for long-term acoustic event mining ideas."
-    risk: "High data volume and variable labels."
-
-  - id: "sanctsound"
-    name: "SanctSound"
-    role: "future_passive_acoustic_archive"
-    type: "passive_acoustic_archive"
-    status: "future"
-    why: "Useful for environmental/acoustic context."
-    risk: "Not needed for MVP."
-
-rules:
-  do_not_download_everything_in_h1: true
-  do_not_commit_large_data: true
-  review_license_before_redistribution: true
-  prefer_small_video_sample_first: true
+data_rules:
+  commit_large_data: false
+  commit_raw_datasets: false
+  commit_video_samples: false
+  keep_data_local: true
