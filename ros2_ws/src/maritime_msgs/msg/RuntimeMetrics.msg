@@ -1,0 +1,11 @@
+std_msgs/Header header
+float32 fps
+float32 inference_latency_ms
+float32 tracking_latency_ms
+float32 end_to_end_latency_ms
+uint32 frame_index
+uint32 dropped_frames
+uint32 num_detections
+uint32 num_tracks
+string scenario_name
+string node_name
