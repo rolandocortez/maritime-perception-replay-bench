@@ -1,0 +1,9 @@
+std_msgs/Header header
+uint32 frame_index
+float64 source_timestamp_sec
+float64 publish_timestamp_sec
+float32 frame_age_ms
+string scenario_name
+string source_uri
+bool is_fault_injected
+string fault_type

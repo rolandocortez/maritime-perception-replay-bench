@@ -1,0 +1,69 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+
+design_goal: "Define stable ROS2 topic and message contracts that do not depend on a specific detector model."
+
+message_policy:
+  prefer_standard_messages: true
+  standard_messages:
+    image: "sensor_msgs/msg/Image"
+    camera_info: "sensor_msgs/msg/CameraInfo"
+    detections: "vision_msgs/msg/Detection2DArray"
+  custom_messages:
+    tracks: "maritime_msgs/msg/Track2DArray"
+    runtime_metrics: "maritime_msgs/msg/RuntimeMetrics"
+    frame_debug: "maritime_msgs/msg/FrameDebug"
+  rationale: "Use standard ROS2 messages for image and detection data, and custom messages only for tracking, runtime observability and replay-specific debug metadata."
+
+topics:
+  - name: "/camera/image_raw"
+    type: "sensor_msgs/msg/Image"
+    publisher: "replay_node_or_oak"
+    subscriber: "detector_node"
+    qos: "sensor_data"
+    notes: "Main image stream."
+
+  - name: "/camera/camera_info"
+    type: "sensor_msgs/msg/CameraInfo"
+    publisher: "replay_node_or_oak"
+    subscriber: "detector_node"
+    qos: "sensor_data"
+    notes: "Optional camera calibration metadata."
+
+  - name: "/detections"
+    type: "vision_msgs/msg/Detection2DArray"
+    publisher: "detector_node"
+    subscriber: "tracker_node"
+    qos: "reliable"
+    notes: "Model outputs. The detector can be YOLO, RT-DETR or another model."
+
+  - name: "/tracks"
+    type: "maritime_msgs/msg/Track2DArray"
+    publisher: "tracker_node"
+    subscriber: "overlay_or_metrics_node"
+    qos: "reliable"
+    notes: "Stable temporal tracks."
+
+  - name: "/metrics/runtime"
+    type: "maritime_msgs/msg/RuntimeMetrics"
+    publisher: "metrics_node"
+    subscriber: "foxglove_or_logs"
+    qos: "reliable"
+    notes: "Runtime observability."
+
+  - name: "/debug/frame_info"
+    type: "maritime_msgs/msg/FrameDebug"
+    publisher: "replay_or_fault_nodes"
+    subscriber: "metrics_or_logs"
+    qos: "reliable"
+    notes: "Timing and debug metadata."
+
+model_independence:
+  detector_output_contract: "/detections"
+  tracker_output_contract: "/tracks"
+  runtime_contract: "/metrics/runtime"
+  debug_contract: "/debug/frame_info"
+  notes:
+    - "Detector implementations can change as long as they publish vision_msgs/msg/Detection2DArray."
+    - "Tracker implementations can change as long as they publish maritime_msgs/msg/Track2DArray."
+    - "Metrics and debug consumers should depend on topic contracts, not on detector internals."
