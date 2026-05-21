@@ -1,0 +1,9 @@
+replay_tools:
+  ros__parameters:
+    source_type: "video"
+    source_path: "data/samples/harbor_sample.mp4"
+    publish_rate_hz: 30.0
+    loop: false
+    use_sim_time: true
+    frame_id: "camera_frame"
+    scenario_name: "clean_replay"

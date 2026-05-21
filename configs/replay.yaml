@@ -1,0 +1,8 @@
+replay:
+  source_type: "video"
+  source_path: "data/samples/harbor_sample.mp4"
+  publish_rate_hz: null
+  loop: false
+  use_sim_time: true
+  frame_id: "camera_frame"
+  scenario_name: "clean_replay"
