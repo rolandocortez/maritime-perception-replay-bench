@@ -3,7 +3,7 @@
 <package format="3">
   <name>replay_tools</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Replay tools for publishing maritime perception datasets into ROS2 topics.</description>
   <maintainer email="rolscg@gmail.com">rolando</maintainer>
   <license>Apache-2.0</license>
 
@@ -11,6 +11,7 @@
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
   <depend>cv_bridge</depend>
+  <depend>maritime_msgs</depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

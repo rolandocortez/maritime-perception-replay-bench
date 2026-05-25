@@ -1,6 +1,7 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, LogInfo
 from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
@@ -8,6 +9,8 @@ def generate_launch_description():
     scenario_name = LaunchConfiguration("scenario_name")
     use_sim_time = LaunchConfiguration("use_sim_time")
     loop = LaunchConfiguration("loop")
+    publish_rate_hz = LaunchConfiguration("publish_rate_hz")
+    frame_id = LaunchConfiguration("frame_id")
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -22,7 +25,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             "use_sim_time",
-            default_value="true",
+            default_value="false",
             description="Whether nodes should use simulated time.",
         ),
         DeclareLaunchArgument(
@@ -30,13 +33,36 @@ def generate_launch_description():
             default_value="false",
             description="Whether the replay source should loop.",
         ),
+        DeclareLaunchArgument(
+            "publish_rate_hz",
+            default_value="0.0",
+            description="Override publish rate. Use 0.0 to use the source video FPS.",
+        ),
+        DeclareLaunchArgument(
+            "frame_id",
+            default_value="camera_frame",
+            description="Frame id used in published image headers.",
+        ),
         LogInfo(msg=[
-            "[replay_pipeline] configured video_path=", video_path,
+            "[replay_pipeline] starting video replay: video_path=", video_path,
             " scenario_name=", scenario_name,
             " use_sim_time=", use_sim_time,
             " loop=", loop,
+            " publish_rate_hz=", publish_rate_hz,
+            " frame_id=", frame_id,
         ]),
-        LogInfo(msg=[
-            "[replay_pipeline] scaffold only: replay/detector/tracker nodes will be added in later milestones."
-        ]),
+        Node(
+            package="replay_tools",
+            executable="video_replay_node",
+            name="video_replay_node",
+            output="screen",
+            parameters=[{
+                "video_path": video_path,
+                "scenario_name": scenario_name,
+                "use_sim_time": use_sim_time,
+                "loop": loop,
+                "publish_rate_hz": publish_rate_hz,
+                "frame_id": frame_id,
+            }],
+        ),
     ])
