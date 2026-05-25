@@ -1,0 +1,71 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+
+goal: "Define how local artifacts are organized so replay experiments remain reproducible without committing heavy files."
+
+artifact_classes:
+  raw_inputs:
+    examples:
+      - "local videos"
+      - "datasets"
+      - "ROS2 bags"
+    paths:
+      - "data/samples"
+      - "data/raw"
+      - "data/bags"
+    policy: "Do not commit. Keep local or external."
+
+  derived_outputs:
+    examples:
+      - "metrics"
+      - "predictions"
+      - "screenshots"
+      - "reports"
+    paths:
+      - "artifacts/metrics"
+      - "artifacts/predictions"
+      - "artifacts/screenshots"
+      - "reports"
+    policy: "Do not commit generated outputs by default."
+
+  model_artifacts:
+    examples:
+      - "checkpoints"
+      - "ONNX exports"
+      - "runtime engine files"
+    paths:
+      - "artifacts/models"
+    policy: "Do not commit large model artifacts."
+
+  manifests:
+    examples:
+      - "bag metadata"
+      - "experiment metadata"
+      - "dataset indexing metadata"
+    paths:
+      - "artifacts/manifests"
+    policy: "Generated manifests stay local unless intentionally promoted to config."
+
+reproducibility_policy:
+  versioned:
+    - "source code"
+    - "ROS2 packages"
+    - "scripts"
+    - "Makefile"
+    - "README.md"
+    - "lightweight configs under configs/"
+  local_only:
+    - "bags"
+    - "videos"
+    - "generated frames"
+    - "metrics outputs"
+    - "predictions"
+    - "screenshots"
+    - "model checkpoints"
+    - "generated reports"
+
+part2_readiness:
+  - "Part 2 can add detection/tracking outputs under artifacts/predictions."
+  - "Runtime metrics can be written under artifacts/metrics."
+  - "Bag and experiment sidecars can be written under artifacts/manifests."
+  - "Demo screenshots can be written under artifacts/screenshots."

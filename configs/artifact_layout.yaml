@@ -1,0 +1,44 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+
+artifacts:
+  bags:
+    path: "data/bags"
+    description: "Recorded ROS2 replay logs."
+    git_policy: "ignored"
+
+  metrics:
+    path: "artifacts/metrics"
+    description: "Runtime and evaluation metrics."
+    git_policy: "ignored_except_gitkeep"
+
+  predictions:
+    path: "artifacts/predictions"
+    description: "Detector/tracker outputs and uncertain frames."
+    git_policy: "ignored_except_gitkeep"
+
+  screenshots:
+    path: "artifacts/screenshots"
+    description: "Demo and debugging screenshots."
+    git_policy: "ignored_except_gitkeep"
+
+  models:
+    path: "artifacts/models"
+    description: "Checkpoints, ONNX and runtime exports."
+    git_policy: "ignored_except_gitkeep"
+
+  manifests:
+    path: "artifacts/manifests"
+    description: "Dataset, bag and experiment metadata."
+    git_policy: "ignored_except_gitkeep"
+
+reports:
+  path: "reports"
+  description: "Generated local reports and acceptance notes."
+  git_policy: "ignored_except_gitkeep"
+
+principles:
+  - "Raw bags and local datasets stay outside Git."
+  - "Generated metrics, screenshots, predictions and models stay outside Git."
+  - "Lightweight schemas and strategy configs are versioned under configs/."
+  - "Artifacts should be reproducible from source configs, scripts and local data."
