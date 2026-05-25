@@ -1,0 +1,106 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+
+goal: "Define timestamp hygiene, replay timing semantics and ROS2 QoS policy for field-debuggable perception replay."
+
+timing_policy:
+  frame_index:
+    meaning: "Monotonic index of the frame inside the replay stream."
+    source: "Incremented by the replay node."
+    notes:
+      - "Starts at zero for each replay run."
+      - "Can reset to zero when loop mode restarts the video."
+
+  source_timestamp_sec:
+    meaning: "Logical timestamp of the frame inside the original video or dataset."
+    source: "Computed from frame_index / source_fps for video replay."
+    notes:
+      - "Represents dataset time, not wall-clock time."
+      - "Useful for comparing repeated runs on the same input."
+
+  publish_timestamp_sec:
+    meaning: "ROS timestamp assigned when the frame is published."
+    source: "Node clock at publish time."
+    notes:
+      - "Represents when the message entered the ROS graph."
+      - "Can be wall time or simulated time depending on use_sim_time and /clock."
+
+  frame_age_ms:
+    meaning: "Approximate delay between logical source time and replay elapsed time."
+    source: "Computed by the replay node."
+    notes:
+      - "Useful for debugging replay pacing."
+      - "Not a detector latency metric."
+
+  use_sim_time:
+    recommendation: "Use true for fully reproducible replay once /clock publishing is implemented."
+    current_mvp: "Configurable, but launch defaults may remain false until a /clock publisher exists."
+    notes:
+      - "If use_sim_time is true without /clock, ROS time may not advance."
+      - "For the current MVP, wall time is acceptable for smoke tests."
+
+  clock_topic:
+    name: "/clock"
+    status: "optional_mvp"
+    future_use:
+      - "Publish dataset/replay time as ROS simulated time."
+      - "Allow deterministic playback across nodes."
+      - "Make logs easier to correlate with bag replay."
+
+qos_policy:
+  image_stream:
+    topics:
+      - "/camera/image_raw"
+    reliability: "best_effort"
+    durability: "volatile"
+    history: "keep_last"
+    depth: 5
+    reason: "Sensor streams prefer freshness. Dropping old frames is better than building latency."
+
+  detections:
+    topics:
+      - "/detections"
+    reliability: "reliable"
+    durability: "volatile"
+    history: "keep_last"
+    depth: 10
+    reason: "Detection messages are lighter than images and are critical downstream outputs."
+
+  tracks:
+    topics:
+      - "/tracks"
+    reliability: "reliable"
+    durability: "volatile"
+    history: "keep_last"
+    depth: 10
+    reason: "Tracks encode temporal state and should not be dropped casually."
+
+  metrics:
+    topics:
+      - "/metrics/runtime"
+      - "/debug/frame_info"
+    reliability: "reliable"
+    durability: "volatile"
+    history: "keep_last"
+    depth: 50
+    reason: "Observability data should be preserved for debugging and analysis."
+
+metadata_contract:
+  debug_topic: "/debug/frame_info"
+  debug_type: "maritime_msgs/msg/FrameDebug"
+  required_fields:
+    - "header"
+    - "frame_index"
+    - "source_timestamp_sec"
+    - "publish_timestamp_sec"
+    - "frame_age_ms"
+    - "scenario_name"
+    - "source_uri"
+    - "is_fault_injected"
+    - "fault_type"
+
+field_robotics_rationale:
+  - "Field debugging requires separating dataset time from publish time."
+  - "Bags and replay runs should preserve enough metadata to reproduce bugs."
+  - "QoS must be chosen according to data type, bandwidth and freshness requirements."
+  - "Image streams are heavy; metrics and debug messages are lightweight and should be reliable."

@@ -1,18 +1,37 @@
 qos:
   image_stream:
+    topics:
+      - "/camera/image_raw"
     reliability: "best_effort"
     durability: "volatile"
     history: "keep_last"
     depth: 5
+    reason: "Sensor streams prefer freshness over guaranteed delivery."
 
   detections:
+    topics:
+      - "/detections"
     reliability: "reliable"
     durability: "volatile"
     history: "keep_last"
     depth: 10
+    reason: "Detection outputs are lightweight and important for downstream tracking."
+
+  tracks:
+    topics:
+      - "/tracks"
+    reliability: "reliable"
+    durability: "volatile"
+    history: "keep_last"
+    depth: 10
+    reason: "Tracks represent temporal state and should be preserved."
 
   metrics:
+    topics:
+      - "/metrics/runtime"
+      - "/debug/frame_info"
     reliability: "reliable"
     durability: "volatile"
     history: "keep_last"
     depth: 50
+    reason: "Runtime and debug observability should not be casually dropped."

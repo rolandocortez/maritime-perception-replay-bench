@@ -11,6 +11,11 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from sensor_msgs.msg import Image
 
 
+IMAGE_TOPIC = "/camera/image_raw"
+FRAME_DEBUG_TOPIC = "/debug/frame_info"
+DEFAULT_SOURCE_FPS = 30.0
+
+
 class VideoReplayNode(Node):
     def __init__(self):
         super().__init__("video_replay_node")
@@ -43,8 +48,8 @@ class VideoReplayNode(Node):
             depth=10,
         )
 
-        self.image_pub = self.create_publisher(Image, "/camera/image_raw", image_qos)
-        self.debug_pub = self.create_publisher(FrameDebug, "/debug/frame_info", debug_qos)
+        self.image_pub = self.create_publisher(Image, IMAGE_TOPIC, image_qos)
+        self.debug_pub = self.create_publisher(FrameDebug, FRAME_DEBUG_TOPIC, debug_qos)
 
         self.cap = cv2.VideoCapture(self.video_path)
         if not self.cap.isOpened():
@@ -55,11 +60,11 @@ class VideoReplayNode(Node):
         self.valid = True
         self.source_fps = float(self.cap.get(cv2.CAP_PROP_FPS) or 0.0)
         if self.source_fps <= 0.0:
-            self.source_fps = 30.0
+            self.source_fps = DEFAULT_SOURCE_FPS
 
         self.effective_rate_hz = self.publish_rate_hz if self.publish_rate_hz > 0.0 else self.source_fps
         if self.effective_rate_hz <= 0.0:
-            self.effective_rate_hz = 30.0
+            self.effective_rate_hz = DEFAULT_SOURCE_FPS
 
         self.period_sec = 1.0 / self.effective_rate_hz
 
@@ -70,7 +75,9 @@ class VideoReplayNode(Node):
             f"publish_rate_hz={self.effective_rate_hz:.3f}, "
             f"loop={self.loop}, "
             f"frame_id={self.frame_id}, "
-            f"scenario_name={self.scenario_name}"
+            f"scenario_name={self.scenario_name}, "
+            f"image_topic={IMAGE_TOPIC}, "
+            f"debug_topic={FRAME_DEBUG_TOPIC}"
         )
 
         self.worker = threading.Thread(target=self._publish_loop, daemon=True)
@@ -100,6 +107,9 @@ class VideoReplayNode(Node):
             image_msg.header.stamp = header_stamp
             image_msg.header.frame_id = self.frame_id
 
+            # source_timestamp_sec is dataset/video time.
+            # publish_timestamp_sec is ROS publication time.
+            # Keeping both makes replay runs easier to debug and compare.
             source_timestamp_sec = float(self.frame_index) / self.source_fps
             elapsed_sec = time.monotonic() - self.start_monotonic
             frame_age_ms = max(0.0, (elapsed_sec - source_timestamp_sec) * 1000.0)
