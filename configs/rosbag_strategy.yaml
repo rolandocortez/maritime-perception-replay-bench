@@ -1,0 +1,89 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+
+strategy:
+  goal: "Record and replay short ROS2 bags as reproducible field-log style test cases."
+  default_storage: "mcap"
+  fallback_storage: "sqlite3"
+
+principles:
+  raw_bags:
+    description: "Raw bags are treated as source evidence from a run."
+    policy:
+      - "Do not rewrite raw bags for every experiment."
+      - "Keep raw recordings immutable once captured."
+      - "Store derived outputs separately under artifacts/."
+
+  derived_artifacts:
+    description: "Derived artifacts are outputs computed from bags or replay runs."
+    examples:
+      - "metrics"
+      - "predictions"
+      - "screenshots"
+      - "manifests"
+    policy:
+      - "Derived artifacts can be regenerated."
+      - "Derived artifacts should reference the source bag name or manifest."
+
+  metadata_sidecars:
+    description: "Each important recording should have a lightweight metadata sidecar."
+    recommended_fields:
+      - "bag_name"
+      - "recorded_at"
+      - "source_video"
+      - "scenario_name"
+      - "git_commit"
+      - "topics"
+      - "storage_format"
+      - "notes"
+
+  field_debugging:
+    description: "Bags make it possible to replay the same input repeatedly while changing detector, tracker or metrics code."
+    benefits:
+      - "Reproduce bugs without needing the original sensor setup."
+      - "Compare algorithm changes on identical input."
+      - "Debug timing, dropped frames and runtime behavior."
+      - "Create interview-ready demos from short, controlled logs."
+
+  compression:
+    recommendation: "Use compression for larger or long-running bags, but keep short smoke-test bags simple unless size becomes a problem."
+    notes:
+      - "Compression reduces disk usage."
+      - "Compression can add CPU overhead."
+      - "For quick local smoke tests, uncompressed MCAP is usually simpler."
+
+recording_phases:
+  h10_smoke:
+    topics:
+      - "/camera/image_raw"
+      - "/debug/frame_info"
+      - "/clock optional"
+    purpose: "Validate video replay recording and playback."
+
+  detector_phase:
+    topics:
+      - "/camera/image_raw"
+      - "/debug/frame_info"
+      - "/detections"
+    purpose: "Record model outputs for repeatable detector evaluation."
+
+  tracking_phase:
+    topics:
+      - "/camera/image_raw"
+      - "/detections"
+      - "/tracks"
+      - "/metrics/runtime"
+      - "/debug/frame_info"
+    purpose: "Record full perception pipeline behavior."
+
+paths:
+  local_bag_root: "data/bags"
+  artifacts_root: "artifacts"
+  manifests_root: "artifacts/manifests"
+
+git_policy:
+  version_bags: false
+  version_strategy_config: true
+  notes:
+    - "Bags stay local and are ignored by Git."
+    - "Only scripts and lightweight configs are committed."
