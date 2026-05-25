@@ -1,17 +1,26 @@
 replay:
-  source_type: "video"
-  source_path: "data/samples/harbor_sample.mp4"
+  source_type: video
+  source_path: data/samples/harbor_sample.mp4
   publish_rate_hz: null
   loop: false
   use_sim_time: true
-  frame_id: "camera_frame"
-  scenario_name: "clean_replay"
-
+  frame_id: camera_frame
+  scenario_name: clean_replay
 rosbag:
-  output_root: "data/bags"
-  default_storage: "mcap"
+  output_root: data/bags
+  default_storage: mcap
   record_topics:
-    - "/camera/image_raw"
-    - "/debug/frame_info"
+  - /camera/image_raw
+  - /debug/frame_info
   optional_topics:
-    - "/clock"
+  - /clock
+timing:
+  frame_index_origin: 0
+  source_timestamp: frame_index / source_fps
+  publish_timestamp: ROS node clock at message publication
+  frame_age_ms: replay_elapsed_time - source_timestamp
+  clock_topic:
+    name: /clock
+    enabled_in_mvp: false
+    notes: Optional for MVP. Required later for fully deterministic simulated-time
+      replay.
