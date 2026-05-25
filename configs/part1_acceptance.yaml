@@ -1,0 +1,51 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+part: 1
+status: "accepted"
+
+what_works:
+  repo_structure_exists: true
+  ros2_workspace_builds: true
+  video_replay_publishes_camera_image_raw: true
+  frame_debug_metadata_exists: true
+  sample_bag_can_be_recorded: true
+  sample_bag_can_be_replayed: true
+  dataset_decision_matrix_is_documented: true
+  scenario_design_is_documented: true
+  qos_timing_policy_is_documented: true
+  artifact_layout_is_documented: true
+
+commands_tested:
+  python_tooling:
+    - "make setup"
+    - "make inspect-video"
+    - "make frames"
+
+  ros2_build:
+    - "cd ros2_ws && colcon build --symlink-install"
+
+  replay:
+    - "make run-replay"
+    - "ros2 launch maritime_bringup replay_pipeline.launch.py video_path:=data/samples/harbor_sample.mp4 loop:=true"
+
+  topics:
+    - "ros2 topic list"
+    - "ros2 topic hz /camera/image_raw"
+    - "ros2 topic echo /debug/frame_info --once"
+
+  rosbag:
+    - "make record-bag"
+    - "make bag-info BAG=data/bags/<bag_name>"
+    - "make bag-play BAG=data/bags/<bag_name>"
+    - "ros2 bag play data/bags/<bag_name> --loop"
+
+known_notes:
+  - "docs/ is intentionally ignored."
+  - "reports/ is treated as local generated output."
+  - "Markdown files are not committed except README.md."
+  - "Bags and videos are local-only and ignored by Git."
+  - "Image transport can drop messages during recording if the recorder cannot serialize/write fast enough."
+
+part1_closure:
+  summary: "Part 1 establishes a reproducible ROS2 replay foundation with configs, custom messages, launch, video replay, bag recording, timing/QoS policy and artifact layout."
+  ready_for_part2: true
