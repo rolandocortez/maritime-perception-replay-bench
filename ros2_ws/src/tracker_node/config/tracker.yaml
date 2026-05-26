@@ -1,0 +1,10 @@
+tracker_node:
+  ros__parameters:
+    detections_topic: "/detections"
+    tracks_topic: "/tracks"
+    tracker_type: "iou"
+    iou_match_threshold: 0.3
+    max_age_frames: 15
+    min_hits: 2
+    class_aware: true
+    log_every_n_frames: 10
