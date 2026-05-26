@@ -10,6 +10,7 @@ def generate_launch_description():
     model_name = LaunchConfiguration("model_name")
     device = LaunchConfiguration("device")
     image_topic = LaunchConfiguration("image_topic")
+    detections_topic = LaunchConfiguration("detections_topic")
 
     default_config = PathJoinSubstitution([
         FindPackageShare("detector_node"),
@@ -38,10 +39,16 @@ def generate_launch_description():
             default_value="/camera/image_raw",
             description="Input image topic.",
         ),
+        DeclareLaunchArgument(
+            "detections_topic",
+            default_value="/detections",
+            description="Output Detection2DArray topic.",
+        ),
         LogInfo(msg=[
             "[detector] starting with model=", model_name,
             " device=", device,
             " image_topic=", image_topic,
+            " detections_topic=", detections_topic,
         ]),
         Node(
             package="detector_node",
@@ -54,6 +61,7 @@ def generate_launch_description():
                     "model_name": model_name,
                     "device": device,
                     "image_topic": image_topic,
+                    "detections_topic": detections_topic,
                 },
             ],
         ),
