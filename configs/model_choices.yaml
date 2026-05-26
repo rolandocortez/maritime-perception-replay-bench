@@ -1,0 +1,28 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+
+baseline_detector:
+  selected: "YOLO11 via Ultralytics"
+  model_name: "yolo11n.pt"
+  backend: "ultralytics"
+  reason: "Chosen as a deployable and measurable baseline, not as a claim of benchmark novelty."
+
+alternatives:
+  rt_detr:
+    status: "future_experimental"
+    benefits:
+      - "More modern transformer-style detector discussion."
+      - "Potentially useful for deeper model comparison."
+    tradeoffs:
+      - "More integration friction."
+      - "Less convenient for the first ROS2 replay baseline."
+
+selection_criteria:
+  - "Easy to run in a ROS2 replay pipeline."
+  - "Simple Python API."
+  - "Fast enough to measure latency on local hardware."
+  - "Good enough for a demo baseline."
+  - "Export path to ONNX or runtime-specific formats later."
+  - "Compatible with downstream tracking."
+
+interview_answer: "I optimized for a deployable and measurable baseline rather than maximum benchmark accuracy. The value of this prototype is the ROS2 replay, timing, metrics and debugging workflow around the detector."

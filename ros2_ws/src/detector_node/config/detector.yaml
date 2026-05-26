@@ -1,0 +1,14 @@
+detector_node:
+  ros__parameters:
+    model_backend: "ultralytics"
+    model_name: "yolo11n.pt"
+    device: "cpu"
+    image_topic: "/camera/image_raw"
+    detections_debug_topic: "/detections/debug_json"
+    confidence_threshold: 0.25
+    iou_threshold: 0.45
+    publish_debug_json: true
+    max_detections: 100
+    class_filter_enabled: false
+    class_filter_names: ["boat"]
+    log_every_n_frames: 10

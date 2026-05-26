@@ -50,3 +50,8 @@ reports/*
 .DS_Store
 .vscode/
 .idea/
+# Model weights and exported model artifacts
+*.pt
+*.pth
+*.onnx
+*.engine
