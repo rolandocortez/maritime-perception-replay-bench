@@ -267,4 +267,4 @@ Part 1 prepares the project for Part 2: detection, tracking, metrics and evaluat
 This is not an operational maritime detection system. It is a reproducible engineering prototype for building and debugging a maritime perception replay workflow.
 
 
-Current milestone: H15 — Detector/tracker perception core
+Current status: Detector/tracker perception core implemented.
