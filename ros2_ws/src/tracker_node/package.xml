@@ -5,7 +5,7 @@
   <version>0.0.0</version>
   <description>ROS2 IoU tracker node for maritime perception replay.</description>
   <maintainer email="rolscg@gmail.com">rolando</maintainer>
-  <license>MIT</license>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>vision_msgs</depend>

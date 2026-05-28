@@ -18,7 +18,7 @@ setup(
     maintainer="rolando",
     maintainer_email="rolando@example.com",
     description="ROS2 tracker node for maritime perception replay.",
-    license="MIT",
+    license="Apache-2.0",
     entry_points={
         "console_scripts": [
             "tracker_node = tracker_node.node:main",
