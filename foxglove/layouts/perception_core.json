@@ -1,0 +1,16 @@
+{
+  "title": "Maritime Perception Core",
+  "description": "Replay, detections, tracks, and overlay debug layout.",
+  "topics": {
+    "image": "/camera/image_raw",
+    "detections": "/detections",
+    "tracks": "/tracks",
+    "overlay": "/debug/overlay_image",
+    "frame_debug": "/debug/frame_info"
+  },
+  "notes": [
+    "Use /debug/overlay_image for quick visual validation.",
+    "Use /detections and /tracks for structured message inspection.",
+    "This file documents the intended Foxglove panel layout; exact UI layout can be adjusted in Foxglove."
+  ]
+}
