@@ -1,0 +1,13 @@
+overlay_node:
+  ros__parameters:
+    image_topic: "/camera/image_raw"
+    detections_topic: "/detections"
+    tracks_topic: "/tracks"
+    overlay_topic: "/debug/overlay_image"
+    draw_detections: true
+    draw_tracks: true
+    draw_confidence: true
+    draw_track_age: true
+    max_sync_delta_ms: 100.0
+    publish_on_image: true
+    log_every_n_frames: 30
