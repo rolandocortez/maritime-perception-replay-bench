@@ -1,0 +1,14 @@
+water_prior_node:
+  ros__parameters:
+    image_topic: "/camera/image_raw"
+    detections_topic: "/detections"
+    filtered_detections_topic: "/maritime/filtered_detections"
+    water_roi_topic: "/maritime/water_roi"
+    water_prior_overlay_topic: "/debug/water_prior_overlay"
+    mode: "heuristic"
+    valid_y_min_ratio: 0.30
+    valid_y_max_ratio: 1.00
+    filter_policy: "soft"
+    soft_penalty: 0.25
+    publish_overlay: true
+    log_every_n_frames: 10
