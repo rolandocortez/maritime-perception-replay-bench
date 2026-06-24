@@ -1,0 +1,3 @@
+# Optional analysis dependencies for H19.
+# Not required for the core ROS2 replay/detector/tracker demo.
+fiftyone>=1.0.0

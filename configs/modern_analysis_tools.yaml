@@ -1,0 +1,52 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+milestone: "H19"
+purpose: "Add optional modern analysis tools without making them demo-critical."
+
+principle:
+  keep_demo_path_stable: true
+  avoid_heavy_dependencies_in_core_runtime: true
+  optional_tools_are_installed_from_requirements_analysis: true
+
+selected_scope:
+  primary: "FiftyOne failure review workflow"
+  secondary: "SegFormer adapter stub for future learned water prior"
+
+stable_runtime_path:
+  detector: "detector_node"
+  detections_topic: "/detections"
+  tracker: "tracker_node"
+  tracks_topic: "/tracks"
+  water_prior: "water_prior_node"
+  water_prior_mode: "heuristic"
+  filtered_detections_topic: "/maritime/filtered_detections"
+  debug_overlay_topic: "/debug/water_prior_overlay"
+
+optional_tools:
+  fiftyone:
+    status: "script_added"
+    install_file: "requirements-analysis.txt"
+    script: "scripts/build_fiftyone_dataset.py"
+    intended_use:
+      - "load H18 failure-slice screenshots"
+      - "tag examples by slice"
+      - "review confidence and metadata visually"
+      - "identify false-positive candidates and hard maritime frames"
+
+  sam2:
+    status: "future_optional"
+    intended_use:
+      - "pseudo-label assistance"
+      - "interactive masks for hard maritime frames"
+    reason_not_added_now: "Annotation assistance is valuable but not required for the stable ROS2 demo path."
+
+  segformer:
+    status: "adapter_stub_added"
+    intended_use:
+      - "learned water/sky/obstacle segmentation"
+      - "replace heuristic ROI with mask-based maritime prior"
+    current_file: "ros2_ws/src/water_prior_node/water_prior_node/segformer_adapter.py"
+
+interview_positioning:
+  summary: "Modern tools are useful, but they should not destabilize the demo."
+  explanation: "The project keeps deterministic ROS2 nodes as the core path, while optional analysis tools support dataset review and future segmentation-based priors."
