@@ -1,0 +1,59 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+milestone: "H20"
+purpose: "Integrated perception core launch configuration reference."
+
+launch:
+  package: "maritime_bringup"
+  file: "perception_core.launch.py"
+
+default_command: >
+  ros2 launch maritime_bringup perception_core.launch.py
+  video_path:=data/samples/harbor_sample.mp4
+  detector_model:=yolo11n.pt
+  enable_tracker:=true
+  enable_overlay:=true
+  enable_water_prior:=true
+
+topics:
+  image: "/camera/image_raw"
+  detections: "/detections"
+  detections_debug: "/detections/debug_json"
+  tracks: "/tracks"
+  overlay_image: "/debug/overlay_image"
+  water_roi: "/maritime/water_roi"
+  filtered_detections: "/maritime/filtered_detections"
+  water_prior_overlay: "/debug/water_prior_overlay"
+  frame_debug: "/debug/frame_info"
+
+components:
+  replay:
+    package: "replay_tools"
+    executable: "video_replay_node"
+
+  detector:
+    package: "detector_node"
+    executable: "detector_node"
+    model: "yolo11n.pt"
+    device: "cpu"
+
+  tracker:
+    package: "tracker_node"
+    executable: "tracker_node"
+    optional: true
+
+  overlay:
+    package: "overlay_node"
+    executable: "overlay_node"
+    optional: true
+
+  water_prior:
+    package: "water_prior_node"
+    executable: "water_prior_node"
+    optional: true
+    mode: "heuristic"
+
+demo_notes:
+  - "This launch starts the replay, detector, tracker, overlay, and maritime water prior."
+  - "It is the main Part 2 perception-core demo entrypoint."
+  - "Use rqt_image_view on /debug/overlay_image or /debug/water_prior_overlay for visual inspection."

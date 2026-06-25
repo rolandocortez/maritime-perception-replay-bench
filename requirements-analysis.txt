@@ -1,4 +1,7 @@
+# Keep NumPy <2 because ROS Jazzy cv_bridge is built against NumPy 1.x.
 # Optional analysis dependencies for H19.
 # Not required for the core ROS2 replay/detector/tracker demo.
 fiftyone>=1.0.0
 matplotlib>=3.8.0
+numpy>=1.26,<2.0
+opencv-python>=4.9,<4.12
