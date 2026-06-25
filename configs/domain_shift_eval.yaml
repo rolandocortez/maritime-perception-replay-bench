@@ -1,0 +1,51 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+milestone: "H20"
+purpose: "Lightweight cross-source/domain-shift comparison without requiring ground truth."
+
+sources:
+  source_a:
+    name: "harbor_sample_video"
+    path: "data/samples/harbor_sample.mp4"
+    origin: "Pixabay maritime harbor sample"
+  source_b:
+    name: "smd_onboard_sample"
+    path: "data/samples/domain_shift/smd_onboard_sample.mp4"
+    origin: "Singapore Maritime Dataset Visible On-Board sample"
+
+metrics_without_ground_truth:
+  - "detections_per_frame"
+  - "average_confidence"
+  - "class_distribution"
+  - "average_inference_latency_ms"
+  - "low_confidence_fraction"
+  - "small_detection_fraction"
+  - "qualitative_examples"
+
+interpretation_limits:
+  - "This is not AP/mAP because ground truth is not used."
+  - "This mini-eval compares detector behavior across sources, not formal accuracy."
+  - "The goal is to identify confidence shifts, class confusion, detection density changes, and qualitative hard cases."
+
+observed_behavior:
+  harbor_sample_video:
+    detections_per_frame: 4.333
+    average_confidence: 0.336
+    low_confidence_fraction: 0.648
+    small_detection_fraction: 0.967
+    class_behavior: "Many detections are low-confidence and include class confusion such as airplane/bird for boats."
+  smd_onboard_sample:
+    detections_per_frame: 3.000
+    average_confidence: 0.592
+    low_confidence_fraction: 0.167
+    small_detection_fraction: 0.600
+    class_behavior: "Detections are mostly boats with higher confidence."
+
+repo_policy:
+  predictions_are_local: true
+  reports_are_local: true
+  committed_files:
+    - "configs/domain_shift_eval.yaml"
+    - "scripts/run_batch_inference.py"
+    - "scripts/compare_domain_shift.py"
+    - "requirements-analysis.txt"
