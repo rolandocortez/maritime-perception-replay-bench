@@ -21,6 +21,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/FrameDebug.msg"
   "msg/AcousticEvent.msg"
   "msg/AcousticEventArray.msg"
+  "msg/ContactCandidate.msg"
+  "msg/ContactCandidateArray.msg"
   DEPENDENCIES
     std_msgs
     builtin_interfaces
