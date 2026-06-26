@@ -1,0 +1,74 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+milestone: "H21"
+title: "Acoustic Lane Decision"
+
+goal: "Create a minimal ROS2-compatible audio lane for maritime acoustic data."
+
+non_goals:
+  - "No claim of operational underwater drone/submarine detection."
+  - "No real-world acoustic validation from a tiny public sample."
+  - "No heavy audio model training in the first implementation."
+  - "No forced fusion with the visual pipeline before timing/debug infrastructure is ready."
+
+candidate_datasets:
+  deepship:
+    description: "Underwater acoustic benchmark dataset for ship classification."
+    approximate_scale: "47h+ recordings, 265 ships, 4 classes according to the DeepShip publication."
+    labels: "Ship classes."
+    format_expectation: "Audio recordings / processed acoustic clips depending on distribution."
+    download_friction: "Medium; useful but may require dataset-specific access workflow."
+    demo_suitability: "Good for later classifier experiments; not required for MVP probe."
+    risk: "Can pull the project toward model training instead of field-debugging architecture."
+
+  shipsear:
+    description: "Smaller vessel acoustic dataset commonly used for underwater acoustic target recognition."
+    approximate_scale: "Commonly referenced as 90 audio files with 5 classes / 12 categories."
+    labels: "Vessel/source classes and categories."
+    format_expectation: "Audio files, often WAV-based in community mirrors/preprocessing repos."
+    download_friction: "Lower than large archives, depending on mirror."
+    demo_suitability: "Best candidate for a small local WAV probe."
+    risk: "Small dataset; not evidence of operational robustness."
+
+  noaa_passive_acoustic_data:
+    description: "NOAA/NCEI archive for passive acoustic monitoring data."
+    labels: "Archive metadata; not primarily a small supervised ship-classification dataset."
+    format_expectation: "Large passive acoustic recordings and archive metadata."
+    download_friction: "Medium to high for quick demo."
+    demo_suitability: "Good for future realistic archive integration; not ideal for first MVP."
+    risk: "Large files and broad ecological/acoustic scope."
+
+  sanctsound:
+    description: "NOAA/Navy Sanctuary Soundscapes Monitoring Project passive acoustic recordings."
+    labels: "Raw passive acoustic data and metadata."
+    format_expectation: "Large raw acoustic archive."
+    download_friction: "Medium to high."
+    demo_suitability: "Good future field-data reference; too heavy for a quick classifier demo."
+    risk: "Raw data may require significant preprocessing and domain interpretation."
+
+chosen_mvp:
+  decision: "Use local WAV files or a small public sample as input to an audio probe script."
+  reason: "The project needs a stable interface first: sample rate, duration, channels, dtype, and simple energy stats."
+  first_interface:
+    input: "data/acoustic/sample.wav or any local WAV path"
+    command: "python scripts/probe_acoustic_dataset.py --input data/acoustic/sample.wav"
+    output:
+      - "sample_rate"
+      - "duration_sec"
+      - "channels"
+      - "dtype"
+      - "rms_energy"
+      - "peak_amplitude"
+
+future_path:
+  - "ROS2 audio publisher for waveform windows."
+  - "Audio event messages with timestamped classifier/anomaly scores."
+  - "PANNs or CRNN classifier for vessel/noise categories."
+  - "Spectrogram visualization."
+  - "Fusion with visual tracks only after timing/skew diagnostics exist."
+
+interview_answer: >
+  I scoped acoustic as an extensible lane because public synchronized acoustic,
+  vision, and sonar data for the exact operational target is limited. The MVP is
+  an audio probe and ROS2-compatible interface, not a claim of real-world
+  underwater detection.
