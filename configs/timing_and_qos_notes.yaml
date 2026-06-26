@@ -1,0 +1,38 @@
+timing_and_qos_notes:
+  purpose: "Document timestamp, skew, queue, and QoS debugging strategy for the replay bench."
+  claim_boundary:
+    - "Diagnostics are runtime observability signals, not proof of detector accuracy."
+    - "Queue delay is estimated from observed latency baselines at the metrics observer."
+    - "Stage processing time is approximated from message arrival deltas unless nodes publish internal timing."
+  timestamps:
+    image_topic:
+      topic: "/camera/image_raw"
+      expected_stamp: "source frame timestamp assigned by replay node"
+      qos: "sensor data / best effort"
+    detections_topic:
+      topic: "/detections"
+      expected_stamp: "should preserve source image header stamp"
+    tracks_topic:
+      topic: "/tracks"
+      expected_stamp: "should preserve source or detection header stamp"
+    overlay_topic:
+      topic: "/debug/overlay_image"
+      expected_stamp: "should preserve source image header stamp"
+      qos: "sensor data / best effort"
+  diagnostics:
+    timing_topic: "/metrics/timing"
+    diagnostics_topic: "/metrics/diagnostics"
+    measured_fields:
+      - "sensor_to_stage_ms"
+      - "stage_processing_ms"
+      - "estimated_queue_delay_ms"
+      - "timestamp_skew_ms"
+    warnings:
+      warn_latency_ms: 100.0
+      warn_skew_ms: 50.0
+  debugging_order:
+    - "Check clocks and use_sim_time."
+    - "Check whether headers preserve the original sensor timestamp."
+    - "Check QoS compatibility, especially image topics."
+    - "Check queue delay and stale outputs before blaming model accuracy."
+    - "Check dropped frame estimate and replay consistency."
