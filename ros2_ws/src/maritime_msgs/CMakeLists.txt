@@ -19,6 +19,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Track2DArray.msg"
   "msg/RuntimeMetrics.msg"
   "msg/FrameDebug.msg"
+  "msg/AcousticEvent.msg"
+  "msg/AcousticEventArray.msg"
   DEPENDENCIES
     std_msgs
     builtin_interfaces
