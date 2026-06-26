@@ -59,3 +59,6 @@ reports/*
 # Local acoustic samples
 data/acoustic/*
 !data/acoustic/.gitkeep
+# Generated benchmark outputs
+/reports/benchmarks/*
+!/reports/benchmarks/.gitkeep

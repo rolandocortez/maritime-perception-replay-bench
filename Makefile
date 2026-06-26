@@ -83,3 +83,10 @@ bag-play:
 		exit 1; \
 	fi
 	source /opt/ros/jazzy/setup.bash && ros2 bag play "$(BAG)"
+.PHONY: benchmark-online benchmark-online-short
+
+benchmark-online:
+	python scripts/run_online_benchmark.py --scenario clean --output reports/benchmarks/clean_latest --overwrite
+
+benchmark-online-short:
+	python scripts/run_online_benchmark.py --scenario clean_short --output reports/benchmarks/clean_short_latest --overwrite
