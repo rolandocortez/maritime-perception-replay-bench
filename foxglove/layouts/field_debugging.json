@@ -1,0 +1,133 @@
+{
+  "description": "Primary harbor replay observability layout: overlay, runtime metrics, timing diagnostics, logs, and timeline.",
+  "layout": {
+    "panels": [
+      {
+        "config": {
+          "fallback_topic": "/camera/image_raw",
+          "show_topic_picker": true
+        },
+        "id": "left_overlay",
+        "position": {
+          "area": "left",
+          "height": 0.72,
+          "width": 0.58
+        },
+        "title": "Overlay Image",
+        "topics": [
+          "/debug/overlay_image"
+        ],
+        "type": "image"
+      },
+      {
+        "config": {
+          "fields": [
+            "name",
+            "value",
+            "unit",
+            "window"
+          ]
+        },
+        "id": "right_runtime_metrics",
+        "position": {
+          "area": "right_top",
+          "height": 0.26,
+          "width": 0.42
+        },
+        "title": "Runtime Metrics",
+        "topics": [
+          "/metrics/runtime",
+          "/metrics/pipeline"
+        ],
+        "type": "raw_messages_or_table"
+      },
+      {
+        "config": {
+          "fields": [
+            "stage",
+            "sensor_to_stage_ms",
+            "stage_processing_ms",
+            "estimated_queue_delay_ms",
+            "timestamp_skew_ms"
+          ]
+        },
+        "id": "right_timing",
+        "position": {
+          "area": "right_middle",
+          "height": 0.28,
+          "width": 0.42
+        },
+        "title": "Timing Diagnostics",
+        "topics": [
+          "/metrics/timing",
+          "/metrics/diagnostics"
+        ],
+        "type": "raw_messages_or_table"
+      },
+      {
+        "config": {
+          "highlight_terms": [
+            "WARN",
+            "ERROR",
+            "latency",
+            "skew",
+            "queue",
+            "fault"
+          ]
+        },
+        "id": "right_logs_faults",
+        "position": {
+          "area": "right_bottom",
+          "height": 0.26,
+          "width": 0.42
+        },
+        "title": "Logs and Fault Status",
+        "topics": [
+          "/rosout",
+          "/fault/status"
+        ],
+        "type": "logs"
+      },
+      {
+        "config": {
+          "sync_by_header_stamp": true
+        },
+        "id": "bottom_timeline",
+        "position": {
+          "area": "bottom",
+          "height": 0.18,
+          "width": 1.0
+        },
+        "title": "Replay Timeline",
+        "topics": [
+          "/camera/image_raw",
+          "/detections",
+          "/tracks",
+          "/debug/overlay_image",
+          "/metrics/runtime"
+        ],
+        "type": "timeline"
+      }
+    ],
+    "strategy": "side_by_side_field_debugging"
+  },
+  "name": "Field Debugging",
+  "notes": [
+    "This is a source-controlled layout descriptor for Foxglove/RViz-style observability.",
+    "Import manually or translate to a native Foxglove layout if the UI schema changes.",
+    "Generated benchmark outputs and screenshots should stay out of Git."
+  ],
+  "schema_version": "mini_ros2_maritime_observability_v1",
+  "topics": {
+    "camera_image": "/camera/image_raw",
+    "detections": "/detections",
+    "diagnostics": "/metrics/diagnostics",
+    "fault_status": "/fault/status",
+    "logs": "/rosout",
+    "overlay_image": "/debug/overlay_image",
+    "pipeline_metrics": "/metrics/pipeline",
+    "runtime_metrics": "/metrics/runtime",
+    "timing_diagnostics": "/metrics/timing",
+    "tracks": "/tracks"
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "description": "Acoustic extension observability: waveform, spectrogram, acoustic events, and fused contact candidates.",
+  "layout": {
+    "panels": [
+      {
+        "config": {
+          "encoding": "mono8"
+        },
+        "id": "top_spectrogram",
+        "position": {
+          "area": "top",
+          "height": 0.36,
+          "width": 1.0
+        },
+        "title": "Acoustic Spectrogram",
+        "topics": [
+          "/acoustic/spectrogram"
+        ],
+        "type": "image"
+      },
+      {
+        "config": {
+          "fields": [
+            "event_type",
+            "confidence",
+            "start_sec",
+            "duration_sec",
+            "energy",
+            "dominant_frequency_hz"
+          ]
+        },
+        "id": "middle_events",
+        "position": {
+          "area": "middle_left",
+          "height": 0.32,
+          "width": 0.5
+        },
+        "title": "Acoustic Events",
+        "topics": [
+          "/acoustic/events"
+        ],
+        "type": "raw_messages_or_table"
+      },
+      {
+        "config": {
+          "fields": [
+            "track_id",
+            "has_visual_track",
+            "has_acoustic_event",
+            "fused_confidence",
+            "explanation"
+          ]
+        },
+        "id": "middle_fusion",
+        "position": {
+          "area": "middle_right",
+          "height": 0.32,
+          "width": 0.5
+        },
+        "title": "Contact Candidates",
+        "topics": [
+          "/fusion/contact_candidates"
+        ],
+        "type": "raw_messages_or_table"
+      },
+      {
+        "config": {
+          "fields": [
+            "name",
+            "value",
+            "stage",
+            "sensor_to_stage_ms",
+            "timestamp_skew_ms"
+          ]
+        },
+        "id": "bottom_metrics",
+        "position": {
+          "area": "bottom",
+          "height": 0.32,
+          "width": 1.0
+        },
+        "title": "Runtime and Timing Metrics",
+        "topics": [
+          "/metrics/runtime",
+          "/metrics/timing"
+        ],
+        "type": "raw_messages_or_table"
+      }
+    ],
+    "strategy": "side_by_side_field_debugging"
+  },
+  "name": "Acoustic Lane",
+  "notes": [
+    "This is a source-controlled layout descriptor for Foxglove/RViz-style observability.",
+    "Import manually or translate to a native Foxglove layout if the UI schema changes.",
+    "Generated benchmark outputs and screenshots should stay out of Git."
+  ],
+  "schema_version": "mini_ros2_maritime_observability_v1",
+  "topics": {
+    "acoustic_events": "/acoustic/events",
+    "acoustic_spectrogram": "/acoustic/spectrogram",
+    "acoustic_waveform": "/acoustic/waveform",
+    "camera_image": "/camera/image_raw",
+    "contact_candidates": "/fusion/contact_candidates",
+    "detections": "/detections",
+    "diagnostics": "/metrics/diagnostics",
+    "fault_status": "/fault/status",
+    "logs": "/rosout",
+    "overlay_image": "/debug/overlay_image",
+    "pipeline_metrics": "/metrics/pipeline",
+    "runtime_metrics": "/metrics/runtime",
+    "timing_diagnostics": "/metrics/timing",
+    "tracks": "/tracks"
+  }
+}
