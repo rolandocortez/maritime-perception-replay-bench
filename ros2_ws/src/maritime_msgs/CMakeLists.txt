@@ -23,6 +23,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/RuntimeMetric.msg"
   "msg/RuntimeMetricArray.msg"
   "msg/RuntimeMetrics.msg"
+  "msg/TimingDiagnostic.msg"
+  "msg/TimingDiagnosticArray.msg"
   "msg/Track2D.msg"
   "msg/Track2DArray.msg"
   DEPENDENCIES std_msgs
