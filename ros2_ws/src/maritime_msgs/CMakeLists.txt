@@ -14,6 +14,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(vision_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/AcousticWindow.msg"
   "msg/Track2D.msg"
   "msg/Track2DArray.msg"
   "msg/RuntimeMetrics.msg"
@@ -23,6 +24,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
     builtin_interfaces
     sensor_msgs
     vision_msgs
+  DEPENDENCIES std_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)

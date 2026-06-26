@@ -1,0 +1,11 @@
+acoustic_replay_node:
+  ros__parameters:
+    wav_path: "data/acoustic/sample.wav"
+    waveform_topic: "/acoustic/waveform"
+    window_duration_sec: 1.0
+    hop_duration_sec: 0.5
+    publish_rate_hz: 2.0
+    normalize: true
+    loop: true
+    frame_id: "acoustic_frame"
+    use_sim_time: false
