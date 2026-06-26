@@ -22,7 +22,6 @@ setup(
     maintainer_email="rolscg@gmail.com",
     description="Replay local WAV files as time-windowed ROS2 acoustic messages.",
     license="MIT",
-    tests_require=["pytest"],
     entry_points={
         "console_scripts": [
             "acoustic_replay_node = acoustic_replay_node.node:main",
