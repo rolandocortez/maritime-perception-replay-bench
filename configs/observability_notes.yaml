@@ -1,0 +1,30 @@
+observability_notes:
+  purpose: Define demo and debugging layouts for maritime perception replay.
+  claim_boundary:
+  - Layouts are observability aids, not evaluation artifacts.
+  - Screenshots and generated benchmark reports should stay out of Git.
+  - Native Foxglove schemas may evolve; these JSON files document the intended panel/topic
+    layout.
+  field_debugging_workflow:
+  - Start perception_core.launch.py.
+  - Start metrics_node metrics.launch.py.
+  - Open the field_debugging layout.
+  - Inspect overlay, runtime metrics, timing diagnostics, and warnings side by side.
+  - Check QoS/timing before blaming detector quality.
+  topics:
+    camera_image: /camera/image_raw
+    overlay_image: /debug/overlay_image
+    detections: /detections
+    tracks: /tracks
+    runtime_metrics: /metrics/runtime
+    pipeline_metrics: /metrics/pipeline
+    timing_diagnostics: /metrics/timing
+    diagnostics: /metrics/diagnostics
+    fault_status: /fault/status
+    logs: /rosout
+  recommended_demo_order:
+  - Show raw/overlay image.
+  - Show active tracks and detections changing over time.
+  - Show runtime metrics at 1 Hz.
+  - Show timing diagnostics and explain latency/skew warnings.
+  - Run online benchmark and compare summary.json between scenarios.
