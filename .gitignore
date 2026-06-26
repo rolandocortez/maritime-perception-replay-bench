@@ -55,3 +55,7 @@ reports/*
 *.pth
 *.onnx
 *.engine
+
+# Local acoustic samples
+data/acoustic/*
+!data/acoustic/.gitkeep

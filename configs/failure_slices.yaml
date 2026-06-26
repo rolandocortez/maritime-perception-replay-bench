@@ -1,0 +1,48 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+milestone: "H18"
+purpose: "Define qualitative and geometric failure slices for maritime perception debugging."
+
+inputs:
+  image_topic: "/camera/image_raw"
+  detections_topic: "/detections"
+  tracks_topic: "/tracks"
+  water_roi_topic: "/maritime/water_roi"
+
+outputs:
+  examples_dir: "reports/failure_slices/examples"
+  events_jsonl: "reports/failure_slices/failure_slices_events.jsonl"
+  summary_json: "reports/failure_slices/failure_slices_summary.json"
+
+repo_policy:
+  reports_are_local: true
+  screenshots_are_not_versioned: true
+  committed_artifacts:
+    - "scripts/export_failure_examples.py"
+    - "configs/failure_slices.yaml"
+
+slices:
+  small_objects:
+    description: "Detections whose bounding box occupies a very small fraction of the image."
+    criterion: "bbox_area / image_area < small_area_ratio"
+    default_small_area_ratio: 0.01
+    why_it_matters: "Small maritime objects are operationally important but visually ambiguous and easy to miss."
+
+  horizon_clutter:
+    description: "Detections close to the estimated waterline/horizon band."
+    criterion: "bbox center_y lies near water_roi.y_offset, or within a configured y-ratio band."
+    default_horizon_band_px: 120
+    fallback_y_ratio_min: 0.24
+    fallback_y_ratio_max: 0.40
+    why_it_matters: "The waterline region often contains clutter, shore structures, reflections, and ambiguous tiny objects."
+
+  glare_reflections:
+    description: "Qualitative slice for low-confidence detections on water where reflections, wakes, or glitter may confuse the detector."
+    criterion: "low confidence detection inside or near the maritime ROI"
+    confidence_max: 0.35
+    why_it_matters: "Reflections and wakes can produce plausible boxes but unstable tracks or false alarms."
+
+interpretation_notes:
+  - "These slices are not ground-truth metrics."
+  - "They are debugging and analysis views for field-style perception failures."
+  - "Aggregate detection metrics can hide these operationally important cases."

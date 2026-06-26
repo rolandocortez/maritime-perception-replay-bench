@@ -1,0 +1,24 @@
+version: "0.1"
+project: "maritime-perception-replay-bench"
+milestone: "H21"
+
+local_samples:
+  directory: "data/acoustic"
+  git_policy: "Local WAV files are ignored. Only data/acoustic/.gitkeep is committed."
+
+example:
+  path: "data/acoustic/sample.wav"
+  source: "Synthetic local test tone generated for probe validation."
+  committed_to_git: false
+  purpose: "Validate probe_acoustic_dataset.py without downloading a large acoustic dataset."
+
+expected_probe_fields:
+  - "path"
+  - "sample_rate"
+  - "duration_sec"
+  - "channels"
+  - "sample_width_bytes"
+  - "dtype"
+  - "frames"
+  - "rms_energy"
+  - "peak_amplitude"
