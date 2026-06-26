@@ -1,0 +1,26 @@
+multimodal_extension_notes:
+  purpose: "Define a conservative interface for future visual-acoustic fusion."
+  claim_boundary:
+    - "This is not an operational fusion system."
+    - "This does not localize acoustic sources."
+    - "This does not classify vessels from audio."
+    - "This only validates timestamped event streams and temporal association."
+  streams:
+    visual:
+      topic: "/tracks"
+      message: "maritime_msgs/msg/Track2DArray"
+    acoustic:
+      topic: "/acoustic/events"
+      message: "maritime_msgs/msg/AcousticEventArray"
+    output:
+      topic: "/fusion/contact_candidates"
+      message: "maritime_msgs/msg/ContactCandidateArray"
+  fusion_policy:
+    name: "temporal_only"
+    association_window_sec: 2.0
+    description: "Create a contact candidate when an acoustic event is close in time to a visual track update."
+  future_work:
+    - "Use calibrated sensor timestamps."
+    - "Add acoustic classifier trained on curated labeled data."
+    - "Add environment-specific validation."
+    - "Investigate localization only with appropriate sensor geometry."

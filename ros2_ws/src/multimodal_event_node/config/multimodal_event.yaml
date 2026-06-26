@@ -1,0 +1,12 @@
+multimodal_event_node:
+  ros__parameters:
+    tracks_topic: "/tracks"
+    acoustic_events_topic: "/acoustic/events"
+    contact_candidates_topic: "/fusion/contact_candidates"
+    association_window_sec: 2.0
+    fusion_policy: "temporal_only"
+    publish_acoustic_only_candidates: true
+    publish_empty_candidates: false
+    baseline_note: "Temporal association interface only; no localization or operational target claim."
+    log_every_n_messages: 10
+    use_sim_time: false
