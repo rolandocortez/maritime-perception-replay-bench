@@ -1,12 +1,27 @@
 scenarios:
   clean:
-    video_path: "data/samples/harbor_sample.mp4"
-    fault_profile: "none"
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: none
     duration_sec: 60
     warmup_sec: 3
-
   clean_short:
-    video_path: "data/samples/harbor_sample.mp4"
-    fault_profile: "none"
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: none
     duration_sec: 15
+    warmup_sec: 3
+  drop_short:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: frame_drop
+    drop_probability: 0.15
+    deterministic: true
+    random_seed: 42
+    duration_sec: 15
+    warmup_sec: 3
+  drop:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: frame_drop
+    drop_probability: 0.15
+    deterministic: true
+    random_seed: 42
+    duration_sec: 60
     warmup_sec: 3

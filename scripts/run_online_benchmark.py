@@ -129,18 +129,23 @@ def stop_process(process, log_file, *, timeout_sec=8.0):
 
 
 def write_run_config(output_dir, scenario, args):
+    perception_command = [
+        "ros2",
+        "launch",
+        "maritime_bringup",
+        "perception_core.launch.py",
+        f"video_path:={scenario['video_path']}",
+    ]
+
+    if scenario.get("fault_profile") == "frame_drop":
+        perception_command.append("enable_faults:=true")
+
     run_config = {
         "scenario": scenario,
         "output_dir": str(output_dir),
         "metrics_topic": "/metrics/runtime",
         "commands": {
-            "perception": [
-                "ros2",
-                "launch",
-                "maritime_bringup",
-                "perception_core.launch.py",
-                f"video_path:={scenario['video_path']}",
-            ],
+            "perception": perception_command,
             "metrics": [
                 "ros2",
                 "launch",
@@ -251,6 +256,25 @@ def main():
 
     time.sleep(2.0)
 
+    fault_process = None
+    fault_log = None
+
+    if scenario.get("fault_profile") == "frame_drop":
+        print("starting frame-drop fault injector...")
+        fault_cmd = [
+            "ros2",
+            "launch",
+            "fault_injector_node",
+            "frame_drop.launch.py",
+            f"drop_probability:={scenario.get('drop_probability', 0.15)}",
+            f"deterministic:={str(scenario.get('deterministic', True)).lower()}",
+            f"random_seed:={scenario.get('random_seed', 42)}",
+        ]
+        fault_process, fault_log = start_process(
+            fault_cmd,
+            log_path=output_dir / "fault_injector.log",
+        )
+
     print("starting metrics node...")
     metrics_process, metrics_log = start_process(
         metrics_cmd,
@@ -277,6 +301,10 @@ def main():
             rclpy.shutdown()
 
         stop_process(metrics_process, metrics_log)
+
+        if fault_process is not None and fault_log is not None:
+            stop_process(fault_process, fault_log)
+
         stop_process(perception_process, perception_log)
 
     summary = summarize_csv(metrics_csv)
