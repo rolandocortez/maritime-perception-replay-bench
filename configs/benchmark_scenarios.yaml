@@ -25,3 +25,57 @@ scenarios:
     random_seed: 42
     duration_sec: 60
     warmup_sec: 3
+  blur_short:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: visual_degradation
+    visual_mode: blur
+    blur_kernel: 7
+    duration_sec: 15
+    warmup_sec: 3
+    deterministic: true
+    random_seed: 42
+  compression_short:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: visual_degradation
+    visual_mode: compression
+    jpeg_quality: 40
+    duration_sec: 15
+    warmup_sec: 3
+    deterministic: true
+    random_seed: 42
+  glare_short:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: visual_degradation
+    visual_mode: glare
+    brightness_delta: 20.0
+    contrast_alpha: 1.2
+    glare_enabled: true
+    glare_strength: 0.3
+    duration_sec: 15
+    warmup_sec: 3
+    deterministic: true
+    random_seed: 42
+  noise_short:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: visual_degradation
+    visual_mode: noise
+    noise_sigma: 10.0
+    duration_sec: 15
+    warmup_sec: 3
+    deterministic: true
+    random_seed: 42
+  visual_combined_short:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: visual_degradation
+    visual_mode: combined
+    blur_kernel: 5
+    jpeg_quality: 45
+    brightness_delta: 12.0
+    contrast_alpha: 1.15
+    glare_enabled: true
+    glare_strength: 0.2
+    noise_sigma: 6.0
+    duration_sec: 15
+    warmup_sec: 3
+    deterministic: true
+    random_seed: 42

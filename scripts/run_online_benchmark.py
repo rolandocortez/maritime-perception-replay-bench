@@ -137,7 +137,7 @@ def write_run_config(output_dir, scenario, args):
         f"video_path:={scenario['video_path']}",
     ]
 
-    if scenario.get("fault_profile") == "frame_drop":
+    if scenario.get("fault_profile") in ("frame_drop", "visual_degradation"):
         perception_command.append("enable_faults:=true")
 
     run_config = {
@@ -259,16 +259,25 @@ def main():
     fault_process = None
     fault_log = None
 
-    if scenario.get("fault_profile") == "frame_drop":
-        print("starting frame-drop fault injector...")
+    if scenario.get("fault_profile") in ("frame_drop", "visual_degradation"):
+        print("starting fault injector...")
         fault_cmd = [
             "ros2",
             "launch",
             "fault_injector_node",
             "frame_drop.launch.py",
+            f"mode:={scenario.get('fault_profile', 'frame_drop')}",
             f"drop_probability:={scenario.get('drop_probability', 0.15)}",
             f"deterministic:={str(scenario.get('deterministic', True)).lower()}",
             f"random_seed:={scenario.get('random_seed', 42)}",
+            f"visual_mode:={scenario.get('visual_mode', 'blur')}",
+            f"blur_kernel:={scenario.get('blur_kernel', 7)}",
+            f"jpeg_quality:={scenario.get('jpeg_quality', 45)}",
+            f"brightness_delta:={scenario.get('brightness_delta', 20.0)}",
+            f"contrast_alpha:={scenario.get('contrast_alpha', 1.2)}",
+            f"glare_enabled:={str(scenario.get('glare_enabled', True)).lower()}",
+            f"glare_strength:={scenario.get('glare_strength', 0.25)}",
+            f"noise_sigma:={scenario.get('noise_sigma', 8.0)}",
         ]
         fault_process, fault_log = start_process(
             fault_cmd,
