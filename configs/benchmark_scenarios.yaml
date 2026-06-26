@@ -1,0 +1,12 @@
+scenarios:
+  clean:
+    video_path: "data/samples/harbor_sample.mp4"
+    fault_profile: "none"
+    duration_sec: 60
+    warmup_sec: 3
+
+  clean_short:
+    video_path: "data/samples/harbor_sample.mp4"
+    fault_profile: "none"
+    duration_sec: 15
+    warmup_sec: 3
