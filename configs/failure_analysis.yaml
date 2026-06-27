@@ -1,0 +1,39 @@
+failure_analysis:
+  purpose: "Document major perception, tracking, timing, and data-loop failure modes without reducing everything to model accuracy."
+
+  generated_outputs:
+    markdown: "reports/failure_analysis.md"
+    failure_cases_root: "reports/failure_cases"
+
+  categories:
+    - small_objects
+    - glare_reflections
+    - horizon_clutter
+    - tracking_fragmentation
+    - latency_stale_outputs
+    - annotation_noise
+
+  required_fields_per_case:
+    - symptom
+    - likely_cause
+    - how_detected
+    - possible_mitigation
+    - limitation_of_current_analysis
+
+  interpretation_policy:
+    - "Do not blame every failure on the detector."
+    - "Separate perception errors from tracking instability and systems/timing issues."
+    - "Keep ambiguous examples visible."
+    - "Preserve source images and metadata when available."
+    - "Do not claim real harbor validation from replay or OAK smoke tests."
+
+  field_data_to_collect:
+    - "synchronized raw video"
+    - "camera metadata"
+    - "weather and light conditions"
+    - "operator notes"
+    - "false alarm timestamps"
+    - "hard negatives"
+    - "sensor health logs"
+    - "ROS2 bags or MCAP files"
+    - "run manifests"
