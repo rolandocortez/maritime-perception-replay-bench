@@ -73,3 +73,7 @@ data/acoustic/*
 artifacts/*
 # Local MinIO data
 docker/minio-data/
+# Local demo package assets
+demo/*.md
+demo/video/
+demo/screenshots/

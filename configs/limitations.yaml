@@ -1,0 +1,23 @@
+limitations:
+  purpose: "State project limitations clearly so the README remains honest."
+
+  current_limitations:
+    - "The project is a prototype testbed, not an operational system."
+    - "No real harbor-trial validation is claimed."
+    - "OAK live testing validates integration, not maritime performance."
+    - "The detector is not trained or certified specifically for the final maritime target domain."
+    - "Generated reports, models, artifacts, and data are local and ignored by Git."
+    - "Depth is not yet part of the core perception path."
+    - "The acoustic lane is an extensible prototype, not a validated classifier."
+    - "OpenVINO support is useful for profiling but should remain optional if environment issues appear."
+    - "MinIO is optional and local-first; cloud backend can change later."
+    - "The annotation loop exports review candidates but does not replace human label QA."
+
+  reporting_policy:
+    - "Report p50 and p95 latency, not only average FPS."
+    - "Separate replay results from live sensor smoke tests."
+    - "Keep model predictions separate from human-reviewed ground truth."
+    - "Preserve source timestamps, run context, and model confidence when exporting annotation samples."
+    - "Do not commit heavy generated outputs unless explicitly intended."
+
+  defensible_claim: "This project demonstrates a reproducible engineering workflow for perception replay, debugging, annotation mining, edge profiling, and artifact lineage."

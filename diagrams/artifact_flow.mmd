@@ -1,0 +1,17 @@
+flowchart TD
+    A[Run Config] --> B[Run Manifest]
+    C[rosbag2 / MCAP] --> B
+    D[Metrics CSV / Runtime Topics] --> B
+    E[Predictions JSON] --> B
+    F[Screenshots / Debug Images] --> B
+    G[Model Artifact] --> B
+    H[Reports] --> B
+    I[Git Commit / Branch / Dirty State] --> B
+    J[System Info] --> B
+
+    B --> K[Artifact Bundle]
+    K --> L[Local Registry]
+    K --> M[Optional MinIO Mirror]
+
+    L --> N[Reproduce / Debug / Compare]
+    M --> N
