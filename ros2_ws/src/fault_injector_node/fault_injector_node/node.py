@@ -5,10 +5,15 @@ from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
 
+from fault_injector_node.delay import DelayPolicy, DelayQueue
 from fault_injector_node.frame_drop import FrameDropPolicy
 from fault_injector_node.image_utils import array_to_image, image_to_array
 from fault_injector_node.status import make_status_json
 from fault_injector_node.visual_degradation import VisualDegradationPipeline
+
+
+def clock_now_sec(clock) -> float:
+    return float(clock.now().nanoseconds) * 1e-9
 
 
 class FaultInjectorNode(Node):
@@ -33,6 +38,11 @@ class FaultInjectorNode(Node):
         self.declare_parameter("glare_strength", 0.25)
         self.declare_parameter("noise_sigma", 8.0)
 
+        self.declare_parameter("delay_ms", 100.0)
+        self.declare_parameter("jitter_ms", 20.0)
+        self.declare_parameter("max_delay_queue", 500)
+        self.declare_parameter("delay_timer_period_ms", 5.0)
+
         self.input_image_topic = self.get_parameter("input_image_topic").value
         self.output_image_topic = self.get_parameter("output_image_topic").value
         self.status_topic = self.get_parameter("status_topic").value
@@ -51,7 +61,15 @@ class FaultInjectorNode(Node):
         self.glare_strength = float(self.get_parameter("glare_strength").value)
         self.noise_sigma = float(self.get_parameter("noise_sigma").value)
 
-        if self.mode not in ("frame_drop", "visual_degradation"):
+        self.delay_ms = float(self.get_parameter("delay_ms").value)
+        self.jitter_ms = float(self.get_parameter("jitter_ms").value)
+        self.max_delay_queue = int(self.get_parameter("max_delay_queue").value)
+        self.delay_timer_period_ms = max(
+            1.0,
+            float(self.get_parameter("delay_timer_period_ms").value),
+        )
+
+        if self.mode not in ("frame_drop", "visual_degradation", "delay"):
             raise ValueError(f"Unsupported fault injection mode: {self.mode}")
 
         self.policy = FrameDropPolicy(
@@ -73,10 +91,21 @@ class FaultInjectorNode(Node):
             random_seed=self.random_seed,
         )
 
+        self.delay_policy = DelayPolicy(
+            delay_ms=self.delay_ms,
+            jitter_ms=self.jitter_ms,
+            deterministic=self.deterministic,
+            random_seed=self.random_seed,
+        )
+        self.delay_queue = DelayQueue(max_queue_size=self.max_delay_queue)
+
         self.input_frames = 0
         self.forwarded_frames = 0
         self.dropped_frames = 0
         self.degraded_frames = 0
+        self.delayed_frames = 0
+        self.released_delayed_frames = 0
+        self.last_applied_delay_ms = 0.0
         self.last_error = ""
 
         self.image_pub = self.create_publisher(
@@ -96,6 +125,11 @@ class FaultInjectorNode(Node):
             qos_profile_sensor_data,
         )
 
+        self.delay_timer = self.create_timer(
+            self.delay_timer_period_ms / 1000.0,
+            self.release_delayed_messages,
+        )
+
         self.get_logger().info(
             "Fault injector configured: "
             f"mode={self.mode}, visual_mode={self.visual_mode}, "
@@ -105,7 +139,8 @@ class FaultInjectorNode(Node):
             f"blur_kernel={self.blur_kernel}, jpeg_quality={self.jpeg_quality}, "
             f"brightness_delta={self.brightness_delta}, contrast_alpha={self.contrast_alpha}, "
             f"glare_enabled={self.glare_enabled}, glare_strength={self.glare_strength}, "
-            f"noise_sigma={self.noise_sigma}"
+            f"noise_sigma={self.noise_sigma}, delay_ms={self.delay_ms}, "
+            f"jitter_ms={self.jitter_ms}, max_delay_queue={self.max_delay_queue}"
         )
 
     def on_image(self, msg: Image):
@@ -138,6 +173,16 @@ class FaultInjectorNode(Node):
                     f"visual degradation failed; forwarding original frame: {exc}"
                 )
 
+        elif self.mode == "delay":
+            delay_ms = self.delay_policy.sample_delay_ms()
+            self.last_applied_delay_ms = delay_ms
+            self.delayed_frames += 1
+            self.delay_queue.push(
+                msg=msg,
+                now_sec=clock_now_sec(self.get_clock()),
+                delay_ms=delay_ms,
+            )
+
         self.publish_status(last_frame_dropped=dropped)
 
         if self.input_frames % self.log_every_n_frames == 0:
@@ -146,8 +191,33 @@ class FaultInjectorNode(Node):
                 f"mode={self.mode} visual_mode={self.visual_mode} "
                 f"frames_in={self.input_frames} forwarded={self.forwarded_frames} "
                 f"dropped={self.dropped_frames} degraded={self.degraded_frames} "
+                f"delayed={self.delayed_frames} released_delay={self.released_delayed_frames} "
+                f"queued_delay={len(self.delay_queue)} "
+                f"last_delay_ms={self.last_applied_delay_ms:.2f} "
                 f"observed_drop_ratio={ratio:.3f}"
             )
+
+    def release_delayed_messages(self):
+        if self.mode != "delay":
+            return
+
+        now_sec = clock_now_sec(self.get_clock())
+        released = 0
+
+        while True:
+            item = self.delay_queue.pop_due(now_sec=now_sec)
+
+            if item is None:
+                break
+
+            self.image_pub.publish(item.msg)
+            self.forwarded_frames += 1
+            self.released_delayed_frames += 1
+            self.last_applied_delay_ms = item.applied_delay_ms
+            released += 1
+
+        if released > 0:
+            self.publish_status(last_frame_dropped=False)
 
     def publish_status(self, *, last_frame_dropped: bool):
         ratio = self.dropped_frames / max(1, self.input_frames)
@@ -160,6 +230,13 @@ class FaultInjectorNode(Node):
             forwarded_frames=self.forwarded_frames,
             dropped_frames=self.dropped_frames,
             degraded_frames=self.degraded_frames,
+            delayed_frames=self.delayed_frames,
+            released_delayed_frames=self.released_delayed_frames,
+            queued_delay_frames=len(self.delay_queue),
+            dropped_due_to_delay_queue=self.delay_queue.dropped_due_to_queue,
+            delay_ms=self.delay_ms,
+            jitter_ms=self.jitter_ms,
+            last_applied_delay_ms=self.last_applied_delay_ms,
             drop_probability=self.drop_probability,
             observed_drop_ratio=ratio,
             deterministic=self.deterministic,

@@ -79,3 +79,30 @@ scenarios:
     warmup_sec: 3
     deterministic: true
     random_seed: 42
+  delay_short:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: delay
+    delay_ms: 100.0
+    jitter_ms: 20.0
+    duration_sec: 15
+    warmup_sec: 3
+    deterministic: true
+    random_seed: 42
+  delay:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: delay
+    delay_ms: 100.0
+    jitter_ms: 20.0
+    duration_sec: 60
+    warmup_sec: 3
+    deterministic: true
+    random_seed: 42
+  delay_heavy_short:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: delay
+    delay_ms: 250.0
+    jitter_ms: 75.0
+    duration_sec: 15
+    warmup_sec: 3
+    deterministic: true
+    random_seed: 42
