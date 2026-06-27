@@ -1,0 +1,83 @@
+demo_package:
+  purpose: "Prepare a short demo path and backup explanation path for the project."
+
+  local_markdown_assets:
+    note: "Markdown demo files are generated/copied locally under demo/ and ignored by Git."
+    files:
+      - "demo/demo_script.md"
+      - "demo/demo_2min_plan.md"
+      - "demo/demo_10min_deep_dive.md"
+      - "demo/backup_demo_plan.md"
+      - "demo/commands.md"
+      - "demo/video/README.md"
+
+  committed_assets:
+    - ".gitignore"
+    - "configs/demo_package.yaml"
+
+  demo_2min_flow:
+    - time: "0:00-0:15"
+      section: "Motivation"
+      show: "README or architecture diagram"
+      message: "This is a ROS2 replay and debugging bench for maritime perception workflows."
+    - time: "0:15-0:35"
+      section: "Replay or live input"
+      show: "make run-clean or make oak-live"
+      message: "Replay and OAK frames enter as ROS2 image topics."
+    - time: "0:35-0:55"
+      section: "Detection and tracking"
+      show: "overlay with boxes and track IDs"
+      message: "Detector publishes detections; tracker turns them into persistent contacts."
+    - time: "0:55-1:15"
+      section: "Metrics"
+      show: "/metrics/runtime or benchmark summary"
+      message: "p95 latency and track behavior matter more than average FPS alone."
+    - time: "1:15-1:35"
+      section: "Fault injection"
+      show: "make run-blur or make run-delay"
+      message: "The same stack can be stressed with controlled degraded inputs."
+    - time: "1:35-1:50"
+      section: "Annotation and artifacts"
+      show: "mined examples or run manifest"
+      message: "Hard cases and run lineage are preserved."
+    - time: "1:50-2:00"
+      section: "Close"
+      show: "artifact manifest or architecture"
+      message: "The value is the loop: replay, metrics, failures, annotation, and traceability."
+
+  deep_dive_sections:
+    - "problem framing"
+    - "architecture"
+    - "ROS2 graph"
+    - "replay design"
+    - "detector and tracker"
+    - "metrics and timing"
+    - "fault injection"
+    - "edge profiling"
+    - "OAK live path"
+    - "annotation loop"
+    - "artifact registry and manifests"
+    - "failure analysis"
+    - "limitations"
+    - "next steps"
+
+  backup_demo:
+    no_hardware_required: true
+    no_internet_required: true
+    assets:
+      - "README.md"
+      - "diagrams/*.mmd"
+      - "reports/benchmark_summary.md"
+      - "reports/failure_analysis.md"
+      - "artifacts/runs/<run_id>/run_manifest.yaml"
+      - "demo/screenshots/*"
+    fallback_commands:
+      - "python scripts/build_benchmark_summary.py --output-dir reports"
+      - "python scripts/build_failure_analysis.py --output-dir reports"
+      - "python scripts/create_run_artifact_bundle.py --run-name backup_demo --config configs/artifact_registry.yaml --output artifacts/runs"
+
+  demo_boundaries:
+    - "Do not depend on live OAK hardware for the only demo path."
+    - "Do not require internet."
+    - "Do not claim OAK smoke tests validate maritime performance."
+    - "Keep generated screenshots and videos out of Git unless intentionally released."
