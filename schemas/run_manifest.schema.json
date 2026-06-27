@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Maritime Replay Bench Run Manifest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "created_utc",
+    "git",
+    "scenario",
+    "model",
+    "ros",
+    "artifacts",
+    "system"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "run_name": {
+      "type": "string"
+    },
+    "created_utc": {
+      "type": "string"
+    },
+    "project_version": {
+      "type": "string"
+    },
+    "git": {
+      "type": "object",
+      "required": ["commit", "branch", "dirty"],
+      "properties": {
+        "commit": {"type": "string"},
+        "short_commit": {"type": "string"},
+        "branch": {"type": "string"},
+        "dirty": {"type": "boolean"},
+        "status_short": {"type": "string"},
+        "remote": {"type": "string"}
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "required": ["name", "video_path", "fault_profile"],
+      "properties": {
+        "name": {"type": "string"},
+        "video_path": {"type": "string"},
+        "fault_profile": {"type": "string"},
+        "notes": {"type": "string"}
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["name", "runtime", "artifact_path"],
+      "properties": {
+        "name": {"type": "string"},
+        "runtime": {"type": "string"},
+        "artifact_path": {"type": "string"}
+      }
+    },
+    "ros": {
+      "type": "object",
+      "required": ["distro", "use_sim_time", "launch_file"],
+      "properties": {
+        "distro": {"type": "string"},
+        "use_sim_time": {"type": "boolean"},
+        "launch_file": {"type": "string"}
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["bag", "metrics", "predictions", "screenshots", "report"],
+      "properties": {
+        "run_dir": {"type": "string"},
+        "bag": {"type": "string"},
+        "metrics": {"type": "string"},
+        "predictions": {"type": "string"},
+        "screenshots": {"type": "string"},
+        "report": {"type": "string"},
+        "model_copy": {"type": "string"},
+        "minio_upload_manifest": {"type": "string"}
+      }
+    },
+    "system": {
+      "type": "object",
+      "required": ["os", "cpu", "ram_gb"],
+      "properties": {
+        "os": {"type": "string"},
+        "machine": {"type": "string"},
+        "python": {"type": "string"},
+        "cpu": {"type": "string"},
+        "cpu_count": {"type": "integer"},
+        "ram_gb": {"type": "number"},
+        "gpu": {"type": "string"}
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}
