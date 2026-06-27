@@ -71,3 +71,5 @@ data/acoustic/*
 /models/onnx/*
 # Local run artifact registry
 artifacts/*
+# Local MinIO data
+docker/minio-data/
