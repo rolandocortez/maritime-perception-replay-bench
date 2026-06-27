@@ -27,6 +27,10 @@ def generate_launch_description():
     glare_enabled = LaunchConfiguration("glare_enabled")
     glare_strength = LaunchConfiguration("glare_strength")
     noise_sigma = LaunchConfiguration("noise_sigma")
+    delay_ms = LaunchConfiguration("delay_ms")
+    jitter_ms = LaunchConfiguration("jitter_ms")
+    max_delay_queue = LaunchConfiguration("max_delay_queue")
+    delay_timer_period_ms = LaunchConfiguration("delay_timer_period_ms")
 
     return LaunchDescription([
         DeclareLaunchArgument("mode", default_value="frame_drop"),
@@ -41,10 +45,16 @@ def generate_launch_description():
         DeclareLaunchArgument("glare_enabled", default_value="true"),
         DeclareLaunchArgument("glare_strength", default_value="0.25"),
         DeclareLaunchArgument("noise_sigma", default_value="8.0"),
+        DeclareLaunchArgument("delay_ms", default_value="100.0"),
+        DeclareLaunchArgument("jitter_ms", default_value="20.0"),
+        DeclareLaunchArgument("max_delay_queue", default_value="500"),
+        DeclareLaunchArgument("delay_timer_period_ms", default_value="5.0"),
         LogInfo(msg=[
             "[fault_injector] starting injector",
             " mode=", mode,
             " visual_mode=", visual_mode,
+            " delay_ms=", delay_ms,
+            " jitter_ms=", jitter_ms,
             " drop_probability=", drop_probability,
             " deterministic=", deterministic,
             " random_seed=", random_seed,
@@ -69,6 +79,10 @@ def generate_launch_description():
                     "glare_enabled": ParameterValue(glare_enabled, value_type=bool),
                     "glare_strength": ParameterValue(glare_strength, value_type=float),
                     "noise_sigma": ParameterValue(noise_sigma, value_type=float),
+                    "delay_ms": ParameterValue(delay_ms, value_type=float),
+                    "jitter_ms": ParameterValue(jitter_ms, value_type=float),
+                    "max_delay_queue": ParameterValue(max_delay_queue, value_type=int),
+                    "delay_timer_period_ms": ParameterValue(delay_timer_period_ms, value_type=float),
                 },
             ],
         ),

@@ -137,7 +137,7 @@ def write_run_config(output_dir, scenario, args):
         f"video_path:={scenario['video_path']}",
     ]
 
-    if scenario.get("fault_profile") in ("frame_drop", "visual_degradation"):
+    if scenario.get("fault_profile") in ("frame_drop", "visual_degradation", "delay"):
         perception_command.append("enable_faults:=true")
 
     run_config = {
@@ -259,7 +259,7 @@ def main():
     fault_process = None
     fault_log = None
 
-    if scenario.get("fault_profile") in ("frame_drop", "visual_degradation"):
+    if scenario.get("fault_profile") in ("frame_drop", "visual_degradation", "delay"):
         print("starting fault injector...")
         fault_cmd = [
             "ros2",
@@ -278,6 +278,10 @@ def main():
             f"glare_enabled:={str(scenario.get('glare_enabled', True)).lower()}",
             f"glare_strength:={scenario.get('glare_strength', 0.25)}",
             f"noise_sigma:={scenario.get('noise_sigma', 8.0)}",
+            f"delay_ms:={scenario.get('delay_ms', 100.0)}",
+            f"jitter_ms:={scenario.get('jitter_ms', 20.0)}",
+            f"max_delay_queue:={scenario.get('max_delay_queue', 500)}",
+            f"delay_timer_period_ms:={scenario.get('delay_timer_period_ms', 5.0)}",
         ]
         fault_process, fault_log = start_process(
             fault_cmd,
