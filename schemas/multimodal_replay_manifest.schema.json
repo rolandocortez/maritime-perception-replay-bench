@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/maritime/multimodal_replay_manifest.schema.json",
+  "title": "Paired multimodal replay manifest",
+  "type": "object",
+  "required": [
+    "sample_id",
+    "dataset",
+    "license_review_required",
+    "video",
+    "audio",
+    "sync",
+    "attribution"
+  ],
+  "properties": {
+    "sample_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dataset": {
+      "type": "string",
+      "minLength": 1
+    },
+    "license_review_required": {
+      "type": "boolean"
+    },
+    "video": {
+      "type": "object",
+      "required": [
+        "path",
+        "start_sec",
+        "end_sec"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "source_path": {
+          "type": "string"
+        },
+        "start_sec": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end_sec": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "fps": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "duration_sec": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "width": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "height": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "required": [
+        "path",
+        "start_sec",
+        "end_sec"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "source_path": {
+          "type": "string"
+        },
+        "start_sec": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end_sec": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "sample_rate_hz": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "duration_sec": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "channels": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "sync": {
+      "type": "object",
+      "required": [
+        "audio_to_video_offset_sec",
+        "confidence"
+      ],
+      "properties": {
+        "audio_to_video_offset_sec": {
+          "type": "number"
+        },
+        "confidence": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "vessel": {
+      "type": "object"
+    },
+    "attribution": {
+      "type": "object",
+      "required": [
+        "citation",
+        "source",
+        "raw_data_rights"
+      ],
+      "properties": {
+        "citation": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "raw_data_rights": {
+          "type": "string"
+        },
+        "redistribution_note": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

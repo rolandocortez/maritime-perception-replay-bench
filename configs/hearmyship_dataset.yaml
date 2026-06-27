@@ -1,0 +1,48 @@
+dataset:
+  name: "HearMyShip / Science Data Bank"
+  paper_title: "A Database of Underwater Radiated Noise from Small Vessels in the Coastal Area"
+  citation: "Shipton, M., Obradović, J., Ferreira, F. et al. A Database of Underwater Radiated Noise from Small Vessels in the Coastal Area. Scientific Data 12, 289 (2025)."
+  source_repository: "Science Data Bank"
+  project_page: "https://hearmyship.fer.hr/"
+  article_url: "https://www.nature.com/articles/s41597-025-04584-x"
+  notes:
+    - "Dataset candidate for paired acoustic-visual replay experiments."
+    - "Raw dataset must stay outside Git."
+    - "Generated GIF/MP4/WAV demo assets require license review before public redistribution."
+    - "Use this dataset for local preparation only until the license gate is resolved."
+
+local_layout:
+  raw_root: "data/multimodal/hearmyship/raw"
+  prepared_root: "data/multimodal/hearmyship/prepared"
+  example_sample: "demo_001"
+
+allowed_extensions:
+  video:
+    - ".mp4"
+    - ".avi"
+    - ".mov"
+    - ".mkv"
+  audio:
+    - ".wav"
+    - ".flac"
+    - ".aif"
+    - ".aiff"
+  metadata:
+    - ".yaml"
+    - ".yml"
+    - ".json"
+    - ".csv"
+    - ".txt"
+
+default_manifest:
+  license_review_required: true
+  audio_to_video_offset_sec: 0.0
+  sync_confidence: "dataset_metadata_or_manual"
+  start_sec: 0.0
+  end_sec: 12.0
+
+git_policy:
+  commit_raw_dataset: false
+  commit_prepared_video_audio: false
+  commit_example_manifest: true
+  commit_adapter_script: true
