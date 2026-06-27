@@ -1,0 +1,14 @@
+fault_injector_node:
+  ros__parameters:
+    input_image_topic: "/camera/image_raw"
+    output_image_topic: "/faults/image_raw"
+    status_topic: "/debug/fault_injection_status"
+    mode: "delay"
+    delay_ms: 100.0
+    jitter_ms: 20.0
+    max_delay_queue: 500
+    delay_timer_period_ms: 5.0
+    deterministic: true
+    random_seed: 42
+    log_every_n_frames: 30
+    use_sim_time: false

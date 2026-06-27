@@ -1,0 +1,8 @@
+std_msgs/Header header
+int32 track_id
+bool has_visual_track
+bool has_acoustic_event
+float32 visual_confidence
+float32 acoustic_confidence
+float32 fused_confidence
+string explanation

@@ -1,0 +1,21 @@
+metrics_node:
+  ros__parameters:
+    image_topic: /camera/image_raw
+    detections_topic: /detections
+    tracks_topic: /tracks
+    overlay_topic: /debug/overlay_image
+    metrics_topic: /metrics/runtime
+    pipeline_topic: /metrics/pipeline
+    window_size: 200
+    publish_rate_hz: 1.0
+    estimate_dropped_frames: true
+    drop_gap_factor: 1.5
+    target_input_fps: 0.0
+    max_reasonable_latency_sec: 60.0
+    log_every_n_publishes: 10
+    use_sim_time: false
+    timing_topic: /metrics/timing
+    diagnostics_topic: /metrics/diagnostics
+    timing_diagnostics_enabled: true
+    warn_latency_ms: 100.0
+    warn_skew_ms: 50.0

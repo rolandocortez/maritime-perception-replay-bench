@@ -1,0 +1,11 @@
+fault_injector_node:
+  ros__parameters:
+    input_image_topic: "/camera/image_raw"
+    output_image_topic: "/faults/image_raw"
+    status_topic: "/debug/fault_injection_status"
+    mode: "frame_drop"
+    drop_probability: 0.15
+    deterministic: true
+    random_seed: 42
+    log_every_n_frames: 30
+    use_sim_time: false

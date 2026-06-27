@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>artifact_tools</name>
+  <version>0.0.0</version>
+  <description>Run manifest and artifact lineage utilities.</description>
+  <maintainer email="rolando@example.com">rolando</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>python3-yaml</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

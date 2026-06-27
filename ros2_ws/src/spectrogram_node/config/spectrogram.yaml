@@ -1,0 +1,16 @@
+spectrogram_node:
+  ros__parameters:
+    waveform_topic: "/acoustic/waveform"
+    spectrogram_topic: "/acoustic/spectrogram"
+    events_topic: "/acoustic/events"
+    n_fft: 1024
+    hop_length: 256
+    dynamic_range_db: 80.0
+    event_method: "energy_threshold"
+    energy_threshold: 0.15
+    min_event_duration_sec: 0.5
+    low_frequency_max_hz: 500.0
+    band_energy_threshold: 0.05
+    baseline_note: "Stub event interface only; not a validated acoustic classifier."
+    log_every_n_windows: 10
+    use_sim_time: false

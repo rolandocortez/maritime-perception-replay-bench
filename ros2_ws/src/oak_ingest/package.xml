@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>oak_ingest</name>
+  <version>0.1.0</version>
+  <description>OAK/DepthAI camera ingest node for ROS2 image smoke testing.</description>
+
+  <maintainer email="rolando@example.com">Rolando</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

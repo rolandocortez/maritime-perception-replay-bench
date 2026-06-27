@@ -1,7 +1,7 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, LogInfo
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -12,6 +12,14 @@ def generate_launch_description():
     detector_device = LaunchConfiguration("detector_device")
 
     image_topic = LaunchConfiguration("image_topic")
+    downstream_image_topic = PythonExpression([
+        "'/faults/image_raw' if '",
+        LaunchConfiguration("enable_faults"),
+        "' == 'true' else '",
+        image_topic,
+        "'",
+    ])
+
     detections_topic = LaunchConfiguration("detections_topic")
     tracks_topic = LaunchConfiguration("tracks_topic")
     overlay_topic = LaunchConfiguration("overlay_topic")
@@ -27,6 +35,7 @@ def generate_launch_description():
     enable_tracker = LaunchConfiguration("enable_tracker")
     enable_overlay = LaunchConfiguration("enable_overlay")
     enable_water_prior = LaunchConfiguration("enable_water_prior")
+    enable_faults = LaunchConfiguration("enable_faults")
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -109,6 +118,11 @@ def generate_launch_description():
             default_value="true",
             description="Enable maritime water prior node.",
         ),
+        DeclareLaunchArgument(
+            "enable_faults",
+            default_value="false",
+            description="Route downstream perception nodes through /faults/image_raw.",
+        ),
 
         LogInfo(msg=[
             "[perception_core] video_path=", video_path,
@@ -116,6 +130,7 @@ def generate_launch_description():
             " enable_tracker=", enable_tracker,
             " enable_overlay=", enable_overlay,
             " enable_water_prior=", enable_water_prior,
+            " enable_faults=", enable_faults,
         ]),
 
         Node(
@@ -143,7 +158,7 @@ def generate_launch_description():
                 "model_path": detector_model,
                 "model": detector_model,
                 "device": detector_device,
-                "image_topic": image_topic,
+                "image_topic": downstream_image_topic,
                 "detections_topic": detections_topic,
                 "detections_debug_topic": "/detections/debug_json",
                 "confidence_threshold": 0.25,
@@ -170,7 +185,7 @@ def generate_launch_description():
             output="screen",
             condition=IfCondition(enable_overlay),
             parameters=[{
-                "image_topic": image_topic,
+                "image_topic": downstream_image_topic,
                 "detections_topic": detections_topic,
                 "tracks_topic": tracks_topic,
                 "overlay_topic": overlay_topic,
@@ -186,7 +201,7 @@ def generate_launch_description():
             output="screen",
             condition=IfCondition(enable_water_prior),
             parameters=[{
-                "image_topic": image_topic,
+                "image_topic": downstream_image_topic,
                 "detections_topic": detections_topic,
                 "filtered_detections_topic": filtered_detections_topic,
                 "water_roi_topic": water_roi_topic,

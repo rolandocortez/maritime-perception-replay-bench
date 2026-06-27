@@ -59,3 +59,17 @@ reports/*
 # Local acoustic samples
 data/acoustic/*
 !data/acoustic/.gitkeep
+# Generated benchmark outputs
+/reports/benchmarks/*
+!/reports/benchmarks/.gitkeep
+# Generated robustness report outputs
+/reports/robustness/*
+# Generated edge/runtime benchmark outputs
+/reports/edge/*
+# Generated model and benchmark input artifacts
+/data/sample_frames/*
+/models/onnx/*
+# Local run artifact registry
+artifacts/*
+# Local MinIO data
+docker/minio-data/

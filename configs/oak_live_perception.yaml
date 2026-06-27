@@ -1,0 +1,36 @@
+oak_live_perception:
+  purpose: "Run live OAK RGB stream through the same detector, tracker, overlay, and metrics nodes used by replay."
+  input:
+    image_topic: "/oak/rgb/image_raw"
+    camera_info_topic: "/oak/rgb/camera_info"
+    status_topic: "/oak/status"
+  output:
+    detections_topic: "/detections"
+    tracks_topic: "/tracks"
+    overlay_topic: "/debug/overlay_image"
+    runtime_metrics_topic: "/metrics/runtime"
+    timing_topic: "/metrics/timing"
+  detector:
+    model: "yolo11n.pt"
+    device: "cpu"
+    confidence_threshold: 0.25
+    iou_threshold: 0.45
+  tracker:
+    tracker_type: "iou"
+    iou_match_threshold: 0.3
+    max_age_frames: 15
+    min_hits: 2
+    class_aware: true
+  overlay:
+    max_sync_delta_ms: 150.0
+  smoke_tests:
+    - "ros2 topic hz /oak/rgb/image_raw"
+    - "ros2 topic hz /detections"
+    - "ros2 topic hz /tracks"
+    - "ros2 topic hz /debug/overlay_image"
+    - "ros2 topic echo /oak/status --once"
+  limitations:
+    - "This validates live sensor routing through the perception stack."
+    - "It does not validate maritime performance."
+    - "Indoor OAK scenes are not representative harbor validation data."
+    - "Observed FPS may be lower than configured FPS depending on USB, CPU load, resolution, and detector runtime."

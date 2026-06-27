@@ -1,0 +1,95 @@
+reproducibility_runbook:
+  purpose: "Clean-room guide for running the maritime perception replay bench from a fresh checkout."
+
+  system_requirements:
+    os: "Ubuntu 24.04 recommended"
+    ros: "ROS2 Jazzy"
+    python: "Python 3.12 recommended"
+    oak_camera: "optional; only needed for live hardware smoke tests"
+    docker: "optional; only needed for MinIO local S3-style artifact mirror"
+    gpu: "optional; CPU path is supported"
+
+  setup_flow:
+    - step: 1
+      name: "Clone repository"
+      commands:
+        - "git clone <repo-url>"
+        - "cd maritime-perception-replay-bench"
+    - step: 2
+      name: "Create Python environment"
+      commands:
+        - "python3 -m venv .venv"
+        - "source .venv/bin/activate"
+        - "python -m pip install --upgrade pip"
+        - "python -m pip install -r requirements.txt"
+        - "python -m pip install -r requirements-analysis.txt || true"
+    - step: 3
+      name: "Build ROS2 workspace"
+      commands:
+        - "source /opt/ros/jazzy/setup.bash"
+        - "cd ros2_ws"
+        - "python -m colcon build --symlink-install"
+        - "source install/setup.bash"
+        - "cd .."
+    - step: 4
+      name: "Run clean replay pipeline"
+      commands:
+        - "make run-clean"
+    - step: 5
+      name: "Run robustness benchmark"
+      commands:
+        - "make benchmark-robustness"
+        - "make robustness-report"
+    - step: 6
+      name: "Run edge profiling"
+      commands:
+        - "make bench-onnx"
+        - "make bench-openvino"
+        - "make compare-runtimes"
+    - step: 7
+      name: "Run OAK live pipeline"
+      optional: true
+      commands:
+        - "make oak-live"
+    - step: 8
+      name: "Mine annotation samples"
+      commands:
+        - "make mine-uncertain"
+        - "make mine-unstable"
+    - step: 9
+      name: "Export annotation review set"
+      commands:
+        - "make export-annotation"
+    - step: 10
+      name: "Package local run artifacts"
+      commands:
+        - "make package-run"
+    - step: 11
+      name: "Optional MinIO artifact upload"
+      optional: true
+      commands:
+        - "docker compose -f docker/minio-compose.yml up -d"
+        - "make minio-upload"
+
+  expected_core_outputs:
+    - "reports/robustness/summary.csv"
+    - "reports/robustness/clean_vs_degraded.md"
+    - "reports/edge/onnx_runtime_results.csv"
+    - "reports/edge/openvino_results.csv"
+    - "reports/edge/runtime_comparison.md"
+    - "reports/annotation/uncertain_frames/manifest.csv"
+    - "reports/annotation/unstable_tracks/track_events.json"
+    - "reports/annotation/export_examples/uncertain_frames_coco.json"
+    - "artifacts/index.csv"
+    - "artifacts/runs/<run_id>/run_manifest.yaml"
+
+  reproducibility_policy:
+    - "Keep generated reports, artifacts, models, bags, screenshots, and MinIO data out of Git."
+    - "Commit scripts, launch files, schemas, configs, and reproducibility notes."
+    - "Use run manifests to preserve git commit, scenario, model, runtime, artifact paths, and system info."
+    - "OAK hardware validation is optional and should not be claimed as maritime performance validation."
+    - "Report p50/p95/latency and failure modes, not only average FPS."
+
+  interview_answer:
+    question: "Could someone else run this?"
+    answer: "I wrote a clean-room runbook with setup, build, replay, benchmark, OAK smoke test, annotation mining, artifact packaging, and troubleshooting. Reproducibility is part of the deliverable, not an afterthought."

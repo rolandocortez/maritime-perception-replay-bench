@@ -1,0 +1,41 @@
+field_debugging:
+  default_video_path: "data/samples/harbor_sample.mp4"
+  default_detector_model: "yolo11n.pt"
+  default_detector_device: "cpu"
+  fault_profiles:
+    none:
+      description: "Clean replay, no injected fault."
+    frame_drop_15:
+      mode: "frame_drop"
+      drop_probability: 0.15
+      deterministic: true
+      random_seed: 42
+    blur_medium:
+      mode: "visual_degradation"
+      visual_mode: "blur"
+      blur_kernel: 7
+      deterministic: true
+      random_seed: 42
+    delay_100ms:
+      mode: "delay"
+      delay_ms: 100.0
+      jitter_ms: 20.0
+      deterministic: true
+      random_seed: 42
+    glare_approx:
+      mode: "visual_degradation"
+      visual_mode: "glare"
+      glare_strength: 0.30
+      brightness_delta: 20.0
+      contrast_alpha: 1.2
+      deterministic: true
+      random_seed: 42
+  expected_topics:
+    raw_image: "/camera/image_raw"
+    faulted_image: "/faults/image_raw"
+    detections: "/detections"
+    tracks: "/tracks"
+    overlay: "/debug/overlay_image"
+    runtime_metrics: "/metrics/runtime"
+    timing_metrics: "/metrics/timing"
+    fault_status: "/debug/fault_injection_status"

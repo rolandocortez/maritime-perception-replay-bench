@@ -1,0 +1,133 @@
+{
+  "description": "Benchmark-focused layout: replay output, metrics, timing diagnostics, and logs for repeatable comparisons.",
+  "layout": {
+    "panels": [
+      {
+        "config": {
+          "show_topic_picker": true
+        },
+        "id": "left_camera_overlay",
+        "position": {
+          "area": "left",
+          "height": 0.7,
+          "width": 0.55
+        },
+        "title": "Replay Overlay",
+        "topics": [
+          "/debug/overlay_image",
+          "/camera/image_raw"
+        ],
+        "type": "image"
+      },
+      {
+        "config": {
+          "key_metrics": [
+            "input_fps",
+            "detector_fps",
+            "tracker_fps",
+            "overlay_fps",
+            "end_to_end_latency_ms_p95",
+            "dropped_frames_estimate"
+          ]
+        },
+        "id": "right_metric_table",
+        "position": {
+          "area": "right_top",
+          "height": 0.35,
+          "width": 0.45
+        },
+        "title": "Benchmark Metrics",
+        "topics": [
+          "/metrics/runtime"
+        ],
+        "type": "metric_table"
+      },
+      {
+        "config": {
+          "key_fields": [
+            "stage",
+            "sensor_to_stage_ms",
+            "estimated_queue_delay_ms",
+            "timestamp_skew_ms"
+          ]
+        },
+        "id": "right_timing_table",
+        "position": {
+          "area": "right_middle",
+          "height": 0.3,
+          "width": 0.45
+        },
+        "title": "Timing and Queue Diagnostics",
+        "topics": [
+          "/metrics/timing"
+        ],
+        "type": "metric_table"
+      },
+      {
+        "config": {
+          "highlight_terms": [
+            "WARN",
+            "fault",
+            "drop",
+            "queue",
+            "skew"
+          ]
+        },
+        "id": "right_logs",
+        "position": {
+          "area": "right_bottom",
+          "height": 0.2,
+          "width": 0.45
+        },
+        "title": "Warnings and Faults",
+        "topics": [
+          "/rosout",
+          "/fault/status"
+        ],
+        "type": "logs"
+      },
+      {
+        "config": {
+          "sync_by_header_stamp": true
+        },
+        "id": "bottom_timeline",
+        "position": {
+          "area": "bottom",
+          "height": 0.15,
+          "width": 1.0
+        },
+        "title": "Benchmark Timeline",
+        "topics": [
+          "/camera/image_raw",
+          "/detections",
+          "/tracks",
+          "/metrics/runtime",
+          "/metrics/timing"
+        ],
+        "type": "timeline"
+      }
+    ],
+    "strategy": "side_by_side_field_debugging"
+  },
+  "name": "Robustness Benchmark",
+  "notes": [
+    "This is a source-controlled layout descriptor for Foxglove/RViz-style observability.",
+    "Import manually or translate to a native Foxglove layout if the UI schema changes.",
+    "Generated benchmark outputs and screenshots should stay out of Git."
+  ],
+  "schema_version": "mini_ros2_maritime_observability_v1",
+  "topics": {
+    "benchmark_runtime_metrics": "/metrics/runtime",
+    "benchmark_timing": "/metrics/timing",
+    "camera_image": "/camera/image_raw",
+    "detections": "/detections",
+    "diagnostics": "/metrics/diagnostics",
+    "fault_status": "/fault/status",
+    "logs": "/rosout",
+    "overlay_image": "/debug/overlay_image",
+    "pipeline_metrics": "/metrics/pipeline",
+    "runtime_metrics": "/metrics/runtime",
+    "timing_diagnostics": "/metrics/timing",
+    "tracks": "/tracks"
+  }
+}

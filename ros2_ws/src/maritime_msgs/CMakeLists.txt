@@ -14,16 +14,19 @@ find_package(sensor_msgs REQUIRED)
 find_package(vision_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/AcousticEvent.msg"
+  "msg/AcousticEventArray.msg"
   "msg/AcousticWindow.msg"
+  "msg/ContactCandidate.msg"
+  "msg/ContactCandidateArray.msg"
+  "msg/FrameDebug.msg"
+  "msg/RuntimeMetric.msg"
+  "msg/RuntimeMetricArray.msg"
+  "msg/RuntimeMetrics.msg"
+  "msg/TimingDiagnostic.msg"
+  "msg/TimingDiagnosticArray.msg"
   "msg/Track2D.msg"
   "msg/Track2DArray.msg"
-  "msg/RuntimeMetrics.msg"
-  "msg/FrameDebug.msg"
-  DEPENDENCIES
-    std_msgs
-    builtin_interfaces
-    sensor_msgs
-    vision_msgs
   DEPENDENCIES std_msgs
 )
 
