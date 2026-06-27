@@ -106,3 +106,41 @@ scenarios:
     warmup_sec: 3
     deterministic: true
     random_seed: 42
+  frame_drop_15:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: frame_drop
+    drop_probability: 0.15
+    deterministic: true
+    random_seed: 42
+    duration_sec: 30
+    warmup_sec: 3
+  blur_medium:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: visual_degradation
+    visual_mode: blur
+    blur_kernel: 7
+    deterministic: true
+    random_seed: 42
+    duration_sec: 30
+    warmup_sec: 3
+  delay_100ms:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: delay
+    delay_ms: 100.0
+    jitter_ms: 20.0
+    deterministic: true
+    random_seed: 42
+    duration_sec: 30
+    warmup_sec: 3
+  glare_approx:
+    video_path: data/samples/harbor_sample.mp4
+    fault_profile: visual_degradation
+    visual_mode: glare
+    brightness_delta: 20.0
+    contrast_alpha: 1.2
+    glare_enabled: true
+    glare_strength: 0.3
+    deterministic: true
+    random_seed: 42
+    duration_sec: 30
+    warmup_sec: 3

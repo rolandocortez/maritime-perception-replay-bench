@@ -90,3 +90,30 @@ benchmark-online:
 
 benchmark-online-short:
 	python scripts/run_online_benchmark.py --scenario clean_short --output reports/benchmarks/clean_short_latest --overwrite
+.PHONY: run-clean run-dropframes run-blur run-delay run-glare benchmark-robustness robustness-report
+
+run-clean:
+	ros2 launch maritime_bringup field_debugging.launch.py fault_profile:=none enable_metrics:=true
+
+run-dropframes:
+	ros2 launch maritime_bringup field_debugging.launch.py enable_faults:=true fault_profile:=frame_drop_15 enable_metrics:=true
+
+run-blur:
+	ros2 launch maritime_bringup field_debugging.launch.py enable_faults:=true fault_profile:=blur_medium enable_metrics:=true
+
+run-delay:
+	ros2 launch maritime_bringup field_debugging.launch.py enable_faults:=true fault_profile:=delay_100ms enable_metrics:=true
+
+run-glare:
+	ros2 launch maritime_bringup field_debugging.launch.py enable_faults:=true fault_profile:=glare_approx enable_metrics:=true
+
+benchmark-robustness:
+	python scripts/run_online_benchmark.py --scenario clean --output reports/robustness/clean --overwrite
+	python scripts/run_online_benchmark.py --scenario frame_drop_15 --output reports/robustness/frame_drop_15 --overwrite
+	python scripts/run_online_benchmark.py --scenario blur_medium --output reports/robustness/blur_medium --overwrite
+	python scripts/run_online_benchmark.py --scenario delay_100ms --output reports/robustness/delay_100ms --overwrite
+	python scripts/run_online_benchmark.py --scenario glare_approx --output reports/robustness/glare_approx --overwrite
+	python scripts/build_robustness_report.py
+
+robustness-report:
+	python scripts/build_robustness_report.py

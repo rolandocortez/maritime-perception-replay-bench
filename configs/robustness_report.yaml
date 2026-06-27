@@ -1,0 +1,42 @@
+robustness_report:
+  title: "Clean vs degraded robustness report"
+  scope:
+    - "This report summarizes replay-based robustness experiments under deterministic injected faults."
+    - "It is a field-debugging bench, not an operational maritime safety validation."
+    - "Injected degradations are controlled approximations and do not replace real harbor data."
+
+  scenarios:
+    clean:
+      display_name: "clean"
+      output_dir: "reports/robustness/clean"
+      qualitative_failure: "Baseline replay; failures mostly reflect detector/tracker limitations and CPU throughput."
+    frame_drop_15:
+      display_name: "frame_drop_15"
+      output_dir: "reports/robustness/frame_drop_15"
+      qualitative_failure: "Stresses tracking continuity and temporal association; IDs may become unstable if gaps exceed tracker tolerance."
+    blur_medium:
+      display_name: "blur_medium"
+      output_dir: "reports/robustness/blur_medium"
+      qualitative_failure: "Stresses detector confidence and localization quality; small or distant objects should degrade first."
+    delay_100ms:
+      display_name: "delay_100ms"
+      output_dir: "reports/robustness/delay_100ms"
+      qualitative_failure: "Stresses stale data handling; p95 latency and timing diagnostics should increase even if FPS remains nonzero."
+    glare_approx:
+      display_name: "glare_approx"
+      output_dir: "reports/robustness/glare_approx"
+      qualitative_failure: "Stresses exposure-like artifacts; bright regions can hide objects or create unstable detections."
+
+  interpretation_questions:
+    detector_breaks_first: "Blur/glare are expected to affect detector quality first because they alter visual evidence."
+    tracker_breaks_first: "Frame drops are expected to affect tracking continuity first because observations become temporally sparse."
+    p95_latency: "Delay should show up strongly in p95 latency and timing diagnostics, not only in average FPS."
+    unstable_tracks: "Unstable tracks are expected when detections flicker, disappear, or arrive late."
+    real_field_test: "Replay the bag with the same layout, inspect overlay/metrics/timing/fault status side by side, then isolate hard segments."
+    additional_data: "Collect raw camera, calibrated timestamps, bags, environmental notes, representative harbor scenes, and failure screenshots."
+
+  limitations:
+    - "Synthetic faults do not model all real maritime effects."
+    - "Short replay benchmarks are useful for debugging but not statistically complete validation."
+    - "CPU load can confound visual degradation and latency results."
+    - "Acoustic lane is an extensibility interface, not an operational acoustic classifier."
