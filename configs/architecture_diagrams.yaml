@@ -1,0 +1,38 @@
+architecture_diagrams:
+  purpose: "Explain the system visually without mixing implemented capabilities with future extensions."
+
+  committed_diagrams:
+    system_architecture: "diagrams/system_architecture.mmd"
+    ros_graph: "diagrams/ros_graph.mmd"
+    artifact_flow: "diagrams/artifact_flow.mmd"
+    extension_paths: "diagrams/extension_paths.mmd"
+
+  implemented_system:
+    - "Replay-oriented ROS2 perception pipeline."
+    - "Optional live OAK RGB ingest path."
+    - "Detector and tracker nodes."
+    - "Water-prior and overlay debugging outputs."
+    - "Runtime, timing, queue, and latency metrics."
+    - "Fault injection for visual and temporal degradation."
+    - "Annotation mining for uncertain frames and unstable tracks."
+    - "Artifact bundles with manifests."
+    - "Optional local MinIO mirror."
+
+  future_extensions:
+    - "Acoustic classifier lane."
+    - "AIS/context fusion."
+    - "Sonar or simulator input."
+    - "Improved human annotation QA."
+    - "Real field-data ingestion."
+    - "Deployment hardening and sustained runtime testing."
+
+  boundary_policy:
+    - "Keep MVP capabilities separate from extension paths."
+    - "Do not claim OAK smoke tests as maritime performance validation."
+    - "Do not present future lanes as implemented unless they are wired, tested, and documented."
+
+  explanation:
+    system_architecture: "Shows how replay or live image streams enter the perception pipeline and feed metrics, annotation mining, and artifact packaging."
+    ros_graph: "Shows the practical ROS2 node/topic relationships."
+    artifact_flow: "Shows how configs, metrics, predictions, model references, reports, and system info become a traceable run bundle."
+    extension_paths: "Shows future work separately from the current implemented bench."

@@ -1,0 +1,32 @@
+flowchart LR
+    Core[Current Replay + OAK RGB Perception Bench]
+
+    Core --> A[Acoustic Lane]
+    A --> A1[Acoustic replay]
+    A --> A2[Spectrogram events]
+    A --> A3[Future classifier]
+
+    Core --> B[AIS / Context Lane]
+    B --> B1[AIS contact messages]
+    B --> B2[Temporal association]
+    B --> B3[Context-aware validation]
+
+    Core --> C[Sonar / Simulator Lane]
+    C --> C1[Simulated sensor topics]
+    C --> C2[Domain stress tests]
+    C --> C3[Cross-sensor timing checks]
+
+    Core --> D[Improved Annotation Loop]
+    D --> D1[Human QA policy]
+    D --> D2[Label consensus]
+    D --> D3[Dataset versioning]
+
+    Core --> E[Real Field Data]
+    E --> E1[Field run manifests]
+    E --> E2[Bag ingestion]
+    E --> E3[Long-run stability analysis]
+
+    Core --> F[Deployment Hardening]
+    F --> F1[ONNX parity checks]
+    F --> F2[OpenVINO stability]
+    F --> F3[Thermal / sustained FPS tests]

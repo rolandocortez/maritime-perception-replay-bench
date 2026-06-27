@@ -1,0 +1,78 @@
+ros_graph_reference:
+  purpose: "Compact reference for main ROS nodes and topics."
+
+  nodes:
+    replay_node:
+      role: "Publishes replayed image streams."
+      implemented: true
+    oak_ingest:
+      role: "Publishes live OAK RGB images, camera info, and status."
+      implemented: true
+      optional: true
+    fault_injector_node:
+      role: "Produces degraded image streams for robustness testing."
+      implemented: true
+    detector_node:
+      role: "Runs object detection and publishes detections."
+      implemented: true
+    tracker_node:
+      role: "Converts detections into persistent tracks."
+      implemented: true
+    water_prior_node:
+      role: "Applies ROI/water-context filtering and debug overlays."
+      implemented: true
+    overlay_node:
+      role: "Renders debug overlays."
+      implemented: true
+    metrics_node:
+      role: "Tracks FPS, latency, timing, queue, and diagnostic metrics."
+      implemented: true
+    annotation_miner:
+      role: "Mines uncertain frames and unstable tracks for review."
+      implemented: true
+    artifact_tools:
+      role: "Creates and validates run manifests."
+      implemented: true
+
+  topics:
+    camera_image_raw:
+      name: "/camera/image_raw"
+      produced_by: "replay path"
+      consumed_by:
+        - "detector_node"
+        - "overlay_node"
+        - "water_prior_node"
+        - "metrics_node"
+    oak_rgb_image_raw:
+      name: "/oak/rgb/image_raw"
+      produced_by: "oak_ingest"
+      consumed_by:
+        - "detector_node"
+        - "overlay_node"
+        - "water_prior_node"
+        - "metrics_node"
+    faults_image_raw:
+      name: "/faults/image_raw"
+      produced_by: "fault_injector_node"
+      consumed_by:
+        - "detector_node"
+    detections:
+      name: "/detections"
+      produced_by: "detector_node"
+      consumed_by:
+        - "tracker_node"
+        - "metrics_node"
+        - "annotation_miner"
+    tracks:
+      name: "/tracks"
+      produced_by: "tracker_node"
+      consumed_by:
+        - "overlay_node"
+        - "metrics_node"
+        - "annotation_miner"
+    metrics_runtime:
+      name: "/metrics/runtime"
+      produced_by: "metrics_node"
+      consumed_by:
+        - "reports"
+        - "debugging tools"

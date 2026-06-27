@@ -1,0 +1,40 @@
+flowchart LR
+    A[Public Maritime Video / Dataset] --> B[ROS2 Replay Node]
+    O[OAK Camera Live Path] --> B2[OAK Ingest]
+
+    B --> C[/camera/image_raw]
+    B2 --> C3[/oak/rgb/image_raw]
+
+    C --> D[Detector Node]
+    C3 --> D
+
+    C --> N[Fault Injector]
+    N --> C2[/faults/image_raw]
+    C2 --> D
+
+    D --> E[/detections]
+    E --> F[Tracker Node]
+    F --> G[/tracks]
+
+    C --> H[Water Prior / ROI]
+    C3 --> H
+    H --> I[/maritime/filtered_detections]
+
+    G --> J[Overlay Node]
+    C --> J
+    C3 --> J
+    J --> K[/debug/overlay_image]
+
+    E --> L[Metrics Node]
+    G --> L
+    K --> L
+    L --> M[/metrics/runtime]
+
+    E --> P[Annotation Miner]
+    G --> P
+    P --> Q[Review Set / COCO / CVAT]
+
+    L --> R[Artifact Registry]
+    Q --> R
+    R --> S[Run Manifest]
+    R --> T[Optional MinIO Mirror]

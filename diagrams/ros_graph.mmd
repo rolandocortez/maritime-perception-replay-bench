@@ -1,0 +1,31 @@
+flowchart LR
+    R[replay_node] -->|/camera/image_raw| FI[fault_injector_node]
+    R -->|/camera/image_raw| D[detector_node]
+
+    O[oak_ingest] -->|/oak/rgb/image_raw| D
+    O -->|/oak/status| M[metrics_node]
+
+    FI -->|/faults/image_raw| D
+
+    D -->|/detections| T[tracker_node]
+    D -->|/detections/debug_json| AM[annotation_miner]
+    D -->|/detections| W[water_prior_node]
+
+    T -->|/tracks| OV[overlay_node]
+    T -->|/tracks| M
+    T -->|/tracks| AM
+
+    W -->|/maritime/filtered_detections| OV
+
+    R -->|/camera/image_raw| OV
+    O -->|/oak/rgb/image_raw| OV
+
+    OV -->|/debug/overlay_image| M
+    W -->|/debug/water_prior_overlay| M
+
+    M -->|/metrics/runtime| OBS[RViz / Foxglove / Reports]
+    M -->|/metrics/timing| OBS
+    M -->|/metrics/diagnostics| OBS
+
+    AM -->|reports/annotation/*| AT[artifact_tools]
+    AT -->|artifacts/runs/*| REG[Local Artifact Registry]
