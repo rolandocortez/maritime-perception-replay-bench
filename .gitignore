@@ -66,3 +66,6 @@ data/acoustic/*
 /reports/robustness/*
 # Generated edge/runtime benchmark outputs
 /reports/edge/*
+# Generated model and benchmark input artifacts
+/data/sample_frames/*
+/models/onnx/*
