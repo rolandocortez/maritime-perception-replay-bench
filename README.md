@@ -4,58 +4,6 @@
 
 A ROS2-based replay and debugging bench for maritime perception workflows.
 
-## Visual tour
-
-This project turns replayed video or live OAK camera frames into a ROS2 perception workflow: images enter the system, detections and tracks are produced, runtime metrics are measured, degraded scenarios are tested, and hard cases are preserved for annotation and artifact review.
-
-```mermaid
-flowchart LR
-    A[Replay video / dataset] --> B[/camera/image_raw]
-    O[OAK RGB live path] --> C[/oak/rgb/image_raw]
-
-    B --> D[Detector]
-    C --> D
-
-    D --> E[/detections]
-    E --> F[Tracker]
-    F --> G[/tracks]
-
-    B --> H[Fault injection]
-    H --> I[/faults/image_raw]
-    I --> D
-
-    E --> J[Metrics]
-    G --> J
-    J --> K[Benchmark summary]
-
-    E --> L[Annotation mining]
-    G --> L
-    L --> M[COCO / CVAT-ready exports]
-
-    K --> N[Artifact bundle]
-    M --> N
-    N --> P[Run manifest]
-```
-
-### What the system shows
-
-| View | What it means |
-|---|---|
-| Perception overlay | The detector and tracker are producing visible contacts from replayed or live image streams. |
-| Runtime metrics | The system measures FPS, p50/p95 latency, active tracks, timing behavior, and dropped-frame estimates. |
-| Fault injection | The same pipeline can be stressed with blur, frame drops, glare approximation, delay, noise, and jitter. |
-| Failure cases | Hard examples are preserved so they can be reviewed instead of hidden inside aggregate metrics. |
-| Artifact bundle | Runs are packaged with configs, reports, predictions, model references, and manifests for traceability. |
-
-### Benchmark and failure views
-
-![Latency comparison](assets/readme/latency_comparison.png)
-
-![Runtime comparison](assets/readme/runtime_comparison.png)
-
-![Failure case examples](assets/readme/failure_cases_contact_sheet.jpg)
-
-
 ## Why this exists
 
 This project explores the engineering workflow behind perception systems for maritime field tests: replay, detection, tracking, runtime metrics, fault injection, annotation mining, edge profiling, live OAK camera ingest, and reproducible artifact packaging.
