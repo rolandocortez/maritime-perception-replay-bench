@@ -77,3 +77,15 @@ docker/minio-data/
 demo/*.md
 demo/video/
 demo/screenshots/
+
+# H55 paired multimodal local datasets
+/data/multimodal/hearmyship/raw/
+/data/multimodal/hearmyship/prepared/
+/data/multimodal/hearmyship/**/*.mp4
+/data/multimodal/hearmyship/**/*.avi
+/data/multimodal/hearmyship/**/*.mov
+/data/multimodal/hearmyship/**/*.mkv
+/data/multimodal/hearmyship/**/*.wav
+/data/multimodal/hearmyship/**/*.flac
+/data/multimodal/hearmyship/**/*.aif
+/data/multimodal/hearmyship/**/*.aiff

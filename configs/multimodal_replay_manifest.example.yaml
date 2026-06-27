@@ -1,0 +1,34 @@
+sample_id: hearmyship_demo_001
+dataset: "HearMyShip / Science Data Bank"
+license_review_required: true
+
+video:
+  path: "data/multimodal/hearmyship/prepared/demo_001/video.mp4"
+  source_path: "/path/to/local/HearMyShip/sample/video.mp4"
+  start_sec: 0.0
+  end_sec: 12.0
+  fps: 30.0
+
+audio:
+  path: "data/multimodal/hearmyship/prepared/demo_001/audio.wav"
+  source_path: "/path/to/local/HearMyShip/sample/audio.wav"
+  start_sec: 0.0
+  end_sec: 12.0
+  sample_rate_hz: 48000
+
+sync:
+  audio_to_video_offset_sec: 0.0
+  confidence: "dataset_metadata_or_manual"
+  notes: "Positive offset means audio starts after video."
+
+vessel:
+  type: "unknown_or_dataset_label"
+  speed_mps: null
+  length_m: null
+  notes: "Filled from dataset metadata if available."
+
+attribution:
+  citation: "Shipton, M., Obradović, J., Ferreira, F. et al. A Database of Underwater Radiated Noise from Small Vessels in the Coastal Area. Scientific Data 12, 289 (2025)."
+  source: "HearMyShip / Science Data Bank"
+  raw_data_rights: "remain with original authors/source"
+  redistribution_note: "Review dataset license before publishing derived GIF/MP4/WAV assets."
