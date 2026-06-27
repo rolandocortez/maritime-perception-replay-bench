@@ -117,3 +117,38 @@ benchmark-robustness:
 
 robustness-report:
 	python scripts/build_robustness_report.py
+
+bench-onnx:
+	python scripts/benchmark_onnx_runtime.py --model models/onnx/yolo11n_maritime_baseline.onnx --images data/sample_frames --output reports/edge/onnx_runtime_results.csv
+
+bench-openvino:
+	python scripts/benchmark_openvino.py --model models/onnx/yolo11n_maritime_baseline.onnx --images data/sample_frames --output reports/edge/openvino_results.csv
+
+compare-runtimes:
+	python scripts/compare_runtime_results.py --input reports/edge --output reports/edge/runtime_comparison.md
+
+oak-live:
+	cd ros2_ws && . /opt/ros/jazzy/setup.sh && . install/setup.sh && ros2 launch maritime_bringup oak_live_perception.launch.py
+
+mine-uncertain:
+	cd ros2_ws && . /opt/ros/jazzy/setup.sh && . install/setup.sh && ros2 launch annotation_miner uncertainty_mining.launch.py image_topic:=/oak/rgb/image_raw detections_topic:=/detections detections_type:=vision_msgs/msg/Detection2DArray max_confidence:=1.0 many_detections_count:=1 max_saved_frames:=20
+
+mine-unstable:
+	cd ros2_ws && . /opt/ros/jazzy/setup.sh && . install/setup.sh && ros2 launch annotation_miner unstable_track_mining.launch.py image_topic:=/oak/rgb/image_raw tracks_topic:=/tracks min_track_age_for_stability:=20 max_missed_frames:=1 max_saved_events:=20
+
+export-annotation:
+	mkdir -p reports/annotation/export_examples
+	python scripts/export_mined_frames_to_coco.py --input reports/annotation/uncertain_frames --output reports/annotation/export_examples/uncertain_frames_coco.json
+	python scripts/export_cvat_task_folder.py --input reports/annotation/unstable_tracks --output reports/annotation/export_examples/cvat_task_unstable_tracks
+
+package-run:
+	python scripts/create_run_artifact_bundle.py --run-name latest --config configs/artifact_registry.yaml --notes "Packaged via make package-run." --output artifacts/runs
+
+minio-up:
+	docker compose -f docker/minio-compose.yml up -d
+
+minio-down:
+	docker compose -f docker/minio-compose.yml down
+
+minio-upload:
+	RUN_DIR=$$(find artifacts/runs -mindepth 1 -maxdepth 1 -type d | sort | tail -1); python scripts/upload_artifacts_to_minio.py --run-dir "$$RUN_DIR" --bucket maritime-replay-bench --list-after

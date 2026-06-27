@@ -1,0 +1,113 @@
+troubleshooting:
+  oak_not_detected:
+    symptoms:
+      - "OAK launch fails."
+      - "No /oak/rgb/image_raw topic."
+    checks:
+      - "lsusb | grep -i luxonis || true"
+      - "python - <<'PY'\nimport depthai as dai\nprint(dai.__version__)\nPY"
+      - "Check USB cable, permissions, and whether another process is using the device."
+    fixes:
+      - "Reconnect OAK."
+      - "Try a different USB port/cable."
+      - "Restart the OAK launch."
+      - "Treat OAK as optional if unavailable."
+
+  ros2_topic_not_publishing:
+    symptoms:
+      - "ros2 topic echo shows nothing."
+      - "topic info says Unknown topic."
+    checks:
+      - "ros2 topic list"
+      - "ros2 node list"
+      - "ros2 topic info /tracks"
+      - "ros2 topic hz /oak/rgb/image_raw"
+    fixes:
+      - "Make sure the publishing launch is running."
+      - "Source /opt/ros/jazzy/setup.bash and ros2_ws/install/setup.bash."
+      - "Check QoS mismatch for camera topics; sensor topics may need best-effort QoS."
+
+  ultralytics_model_missing:
+    symptoms:
+      - "Detector cannot find yolo11n.pt."
+      - "Model load fails."
+    checks:
+      - "ls -lh yolo11n.pt models models/onnx || true"
+      - "python - <<'PY'\nfrom ultralytics import YOLO\nprint('ultralytics ok')\nPY"
+    fixes:
+      - "Download or place the model at the expected path."
+      - "Pass detector_model:=<path> to launch."
+      - "Avoid committing large model files unless explicitly intended."
+
+  onnx_export_fails:
+    symptoms:
+      - "ONNX export fails or output model missing."
+    checks:
+      - "python -m pip show ultralytics onnx onnxruntime || true"
+      - "ls -lh models/onnx || true"
+    fixes:
+      - "Install optional export dependencies."
+      - "Re-run export from a clean venv."
+      - "Check that the source model path exists."
+
+  openvino_fails:
+    symptoms:
+      - "OpenVINO import/runtime error."
+    checks:
+      - "python -m pip show openvino || true"
+      - "python scripts/benchmark_openvino.py --help"
+    fixes:
+      - "Treat OpenVINO as optional."
+      - "Keep ONNX Runtime as the stable baseline."
+      - "Document failure instead of blocking the demo."
+
+  foxglove_or_rviz_not_connecting:
+    symptoms:
+      - "No visualization data."
+      - "Layout opens but topics do not populate."
+    checks:
+      - "ros2 topic list"
+      - "ros2 topic hz /debug/overlay_image"
+      - "Check websocket bridge if using Foxglove."
+    fixes:
+      - "Launch the perception pipeline first."
+      - "Verify topic names match the layout."
+      - "Use RViz layout as fallback."
+
+  weird_timestamps_or_latency:
+    symptoms:
+      - "Large timestamp skew."
+      - "Latency warnings."
+      - "Queue delay warnings."
+    checks:
+      - "ros2 topic echo /metrics/timing --once"
+      - "ros2 topic echo /metrics/diagnostics --once"
+      - "Compare replay vs live OAK input."
+    fixes:
+      - "Check use_sim_time."
+      - "Check camera driver timestamps."
+      - "Reduce queue depth or CPU load."
+      - "Use p95 latency rather than only average FPS."
+
+  low_fps:
+    symptoms:
+      - "OAK input is high FPS but detector/tracker lower FPS."
+      - "Dropped frame estimate increases."
+    checks:
+      - "ros2 topic hz /oak/rgb/image_raw"
+      - "ros2 topic echo /metrics/runtime --once"
+      - "top or htop"
+    fixes:
+      - "Use ONNX Runtime for deployment benchmark."
+      - "Lower camera resolution or frame rate."
+      - "Avoid running heavy visualization and benchmarks at the same time."
+      - "Report p50/p95 and dropped estimates honestly."
+
+  minio_blank_health_page:
+    symptoms:
+      - "Browser at localhost:9000/minio/health/ready shows blank page."
+    explanation: "This is normal if the HTTP status is OK; the health endpoint is not the UI."
+    fixes:
+      - "Open MinIO console at http://localhost:9001."
+      - "Use minioadmin/minioadmin for local dev credentials."
+      - "Stop with docker compose -f docker/minio-compose.yml down."

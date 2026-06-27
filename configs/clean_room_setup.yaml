@@ -1,0 +1,61 @@
+clean_room_setup:
+  purpose: "Checklist for validating the project from a fresh machine or fresh clone."
+
+  assumptions:
+    - "Ubuntu 24.04 is available."
+    - "ROS2 Jazzy is installed."
+    - "The repository has been cloned."
+    - "OAK camera and Docker are optional."
+
+  environment_commands:
+    activate:
+      - "cd maritime-perception-replay-bench"
+      - "source /opt/ros/jazzy/setup.bash"
+      - "source .venv/bin/activate"
+      - "source ros2_ws/install/setup.bash"
+    verify:
+      - "python --version"
+      - "ros2 --version || true"
+      - "git status --short"
+      - "ros2 pkg list | grep maritime || true"
+
+  build_commands:
+    - "source /opt/ros/jazzy/setup.bash"
+    - "source .venv/bin/activate"
+    - "cd ros2_ws"
+    - "python -m colcon build --symlink-install"
+    - "source install/setup.bash"
+
+  smoke_tests:
+    replay_clean:
+      command: "timeout 25s make run-clean"
+      expected: "Perception and metrics nodes start; runtime metrics appear."
+    robustness:
+      command: "make benchmark-robustness && make robustness-report"
+      expected: "Robustness CSV and markdown report are generated."
+    annotation_uncertain:
+      command: "make mine-uncertain"
+      expected: "uncertain_frames manifest and predictions JSON are generated."
+    artifact_bundle:
+      command: "make package-run"
+      expected: "artifacts/index.csv and artifacts/runs/<run_id>/run_manifest.yaml are generated."
+    oak_live_optional:
+      command: "make oak-live"
+      expected: "OAK image, detections, tracks, overlays, and metrics topics appear."
+      optional: true
+    minio_optional:
+      command: "docker compose -f docker/minio-compose.yml up -d"
+      expected: "MinIO is reachable at localhost:9001 and health endpoint at localhost:9000/minio/health/ready."
+      optional: true
+
+  clean_generated_outputs:
+    commands:
+      - "rm -rf reports/annotation reports/edge reports/robustness artifacts/runs artifacts/index.csv .cache"
+    warning: "Do not remove tracked .gitkeep files unless restoring them with git restore."
+
+  pass_condition:
+    - "Repository builds."
+    - "At least run-clean or benchmark workflow runs."
+    - "Artifact bundle can be created."
+    - "Run manifest validates."
+    - "Generated outputs remain ignored by Git."
