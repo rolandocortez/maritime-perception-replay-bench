@@ -1,0 +1,27 @@
+manifest_defaults:
+  schema_version: "1.0"
+  project_version: "v0.4"
+
+  ros:
+    distro: "jazzy"
+    use_sim_time: true
+
+  artifact_fields:
+    - "bag"
+    - "metrics"
+    - "predictions"
+    - "screenshots"
+    - "report"
+    - "model_copy"
+    - "minio_upload_manifest"
+
+  lineage_fields:
+    - "git.commit"
+    - "git.branch"
+    - "git.dirty"
+    - "scenario.name"
+    - "model.name"
+    - "model.runtime"
+    - "artifacts.run_dir"
+
+  purpose: "Make benchmark, replay, live, and field-debugging results traceable."
