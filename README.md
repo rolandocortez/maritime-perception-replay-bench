@@ -4,6 +4,71 @@
 
 A ROS2-based replay and debugging bench for maritime perception workflows.
 
+## Visual tour
+
+This project is easiest to understand as a small test bench for perception experiments.
+
+It takes maritime video, optional live OAK camera frames, and optional acoustic samples, then turns them into streams that can be replayed, measured, stressed, reviewed, and packaged.
+
+```mermaid
+flowchart LR
+    A[Maritime video dataset] --> B[Replay as image stream]
+    O[Optional OAK live camera] --> C[Live image stream]
+    W[Optional WAV acoustic sample] --> X[Acoustic replay / spectrogram]
+
+    B --> D[Detector]
+    C --> D
+
+    D --> E[Detections]
+    E --> F[Tracker]
+    F --> G[Tracks]
+
+    B --> H[Fault injection]
+    H --> D
+
+    E --> M[Metrics]
+    G --> M
+
+    E --> N[Annotation mining]
+    G --> N
+
+    M --> R[Benchmark summary]
+    N --> S[Review exports]
+    R --> T[Artifact bundle]
+    S --> T
+```
+
+### Example replay inputs
+
+These are representative local replay frames from maritime video samples used by the project.
+
+![Maritime replay frames](assets/readme/maritime_replay_frames.jpg)
+
+### Acoustic lane preview
+
+The acoustic lane is currently a prototype path. The spectrogram below shows how a `.wav` sample can be turned into a visual signal for future event detection work.
+
+![Acoustic spectrogram](assets/readme/acoustic_spectrogram.png)
+
+### What the system does in plain language
+
+| Step | Plain-language meaning |
+|---|---|
+| Replay | Play a maritime video back into the system as if it were a sensor stream. |
+| Detection | Find objects or contacts in each image frame. |
+| Tracking | Connect detections over time so contacts do not appear as isolated single-frame events. |
+| Metrics | Measure FPS, p50/p95 latency, active tracks, dropped-frame estimates, and timing behavior. |
+| Fault injection | Stress the same pipeline with blur, frame drops, delay, glare approximation, noise, or jitter. |
+| Annotation mining | Save difficult frames and unstable tracks for human review. |
+| Artifact packaging | Bundle configs, metrics, predictions, reports, and manifests so a run can be reproduced later. |
+
+### DepthAI ReplayVideo note
+
+For OAK/DepthAI-style workflows, recorded videos can also be replayed through a DepthAI `ReplayVideo` host node to produce `ImgFrame` messages from files. In this project, that idea fits as an optional replay source: dataset videos can exercise an OAK-like frame path without requiring the physical camera to be pointed at the scene during the demo.
+
+The live OAK path remains useful as a hardware-in-the-loop smoke test, while dataset replay remains the right source for maritime visual examples.
+
+
 ## Why this exists
 
 This project explores the engineering workflow behind perception systems for maritime field tests: replay, detection, tracking, runtime metrics, fault injection, annotation mining, edge profiling, live OAK camera ingest, and reproducible artifact packaging.
