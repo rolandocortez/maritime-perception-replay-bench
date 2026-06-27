@@ -1,0 +1,41 @@
+quickstart:
+  purpose: "Short practical setup and run guide for the project."
+
+  assumptions:
+    - "Ubuntu 24.04 recommended."
+    - "ROS2 Jazzy installed."
+    - "Python virtual environment available."
+    - "OAK camera is optional."
+    - "Docker and MinIO are optional."
+
+  setup:
+    - "git clone <repo-url>"
+    - "cd maritime-perception-replay-bench"
+    - "python3 -m venv .venv"
+    - "source .venv/bin/activate"
+    - "python -m pip install --upgrade pip"
+    - "python -m pip install -r requirements.txt"
+    - "python -m pip install -r requirements-analysis.txt || true"
+
+  build:
+    - "source /opt/ros/jazzy/setup.bash"
+    - "cd ros2_ws"
+    - "python -m colcon build --symlink-install"
+    - "source install/setup.bash"
+    - "cd .."
+
+  common_commands:
+    clean_pipeline: "make run-clean"
+    robustness: "make benchmark-robustness && make robustness-report"
+    edge_profile: "make bench-onnx && make compare-runtimes"
+    oak_live_optional: "make oak-live"
+    annotation_loop: "make mine-uncertain && make mine-unstable && make export-annotation"
+    package_run: "make package-run"
+
+  expected_outputs:
+    - "reports/robustness/summary.csv"
+    - "reports/edge/runtime_comparison.md"
+    - "reports/annotation/uncertain_frames/manifest.csv"
+    - "reports/annotation/unstable_tracks/track_events.json"
+    - "reports/annotation/export_examples/"
+    - "artifacts/runs/<run_id>/run_manifest.yaml"

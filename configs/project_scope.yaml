@@ -1,0 +1,49 @@
+project_scope:
+  name: "Maritime Perception Replay Bench"
+
+  one_line_summary: "A ROS2-based replay and debugging bench for maritime perception workflows."
+
+  exists_to_explore:
+    - "replay-driven perception debugging"
+    - "detector and tracker behavior under degraded inputs"
+    - "runtime latency and FPS profiling"
+    - "live OAK camera integration"
+    - "annotation mining and review export"
+    - "local-first artifact lineage"
+
+  in_scope:
+    - "ROS2 replay and live-sensor smoke tests"
+    - "object detection and tracking pipeline"
+    - "metrics and timing diagnostics"
+    - "fault injection"
+    - "ONNX and OpenVINO benchmarking"
+    - "OAK RGB live ingest"
+    - "uncertain-frame and unstable-track mining"
+    - "COCO JSON and CVAT-ready export"
+    - "local run artifact registry"
+    - "optional MinIO artifact mirror"
+    - "run manifests and reproducibility notes"
+
+  out_of_scope:
+    - "production maritime autonomy"
+    - "safety certification"
+    - "real harbor-trial performance claims"
+    - "defense product claims"
+    - "custom annotation UI"
+    - "cloud dependency as a requirement"
+    - "claiming OAK smoke tests as maritime validation"
+
+  positioning:
+    honest_description: "prototype testbed"
+    preferred_terms:
+      - "replay bench"
+      - "field-debugging workflow"
+      - "controlled robustness tests"
+      - "annotation loop"
+      - "artifact lineage"
+    avoid_terms:
+      - "military-grade"
+      - "threat detection"
+      - "submarine drone defense"
+      - "production claims"
+      - "state-of-the-art claims"
