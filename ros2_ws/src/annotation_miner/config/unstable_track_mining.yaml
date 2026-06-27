@@ -1,0 +1,15 @@
+unstable_track_miner:
+  ros__parameters:
+    tracks_topic: "/tracks"
+    image_topic: "/camera/image_raw"
+    output_dir: "reports/annotation/unstable_tracks"
+
+    min_track_age_for_stability: 5
+    max_missed_frames: 3
+    recently_lost_ttl_frames: 20
+
+    save_context_frames_before: 10
+    max_saved_events: 200
+    dedupe_window_frames: 30
+
+    id_switch_max_center_distance_px: 80.0
