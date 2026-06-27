@@ -1,270 +1,268 @@
 # Maritime Perception Replay Bench
 
+## One-line summary
+
 A ROS2-based replay and debugging bench for maritime perception workflows.
 
-## Current status
+## Why this exists
 
-The project has completed Part 1: the replay foundation.
+This project explores the engineering workflow behind perception systems for maritime field tests: replay, detection, tracking, runtime metrics, fault injection, annotation mining, edge profiling, live OAK camera ingest, and reproducible artifact packaging.
 
-Implemented so far:
+The goal is not to claim production accuracy. The goal is to build a practical testbed for understanding how perception pipelines behave under replay, degraded inputs, live sensor timing, and data-loop pressure.
 
-- dataset/source configuration;
-- video inspection utility;
-- video-to-frames utility;
-- scenario configuration for clean, hard and degraded replay cases;
-- acoustic lane scoped as a future optional plugin;
-- local-only data and artifact layout;
-- ROS2 workspace with package skeletons;
-- custom ROS2 messages for tracking, runtime metrics and frame debug metadata;
-- ROS2 topic schema configuration;
-- launch-based replay entry point;
-- video replay publisher for `/camera/image_raw`;
-- frame debug publisher for `/debug/frame_info`;
-- rosbag recording and replay workflow;
-- timing and QoS policy;
-- Part 1 artifact and acceptance configuration.
+## What it is
 
-## Repository policy
+Maritime Perception Replay Bench is a prototype ROS2 workspace and tooling layer that includes:
 
-This repository is intended to stay public-safe.
+- a replay-oriented perception pipeline;
+- object detection and IOU-based tracking;
+- runtime, timing, queue, and latency metrics;
+- visual and temporal fault injection;
+- clean-versus-degraded robustness benchmarking;
+- ONNX Runtime and OpenVINO edge profiling scripts;
+- live OAK camera ingest through the same perception stack;
+- annotation mining for uncertain frames and unstable tracks;
+- COCO/JSON and CVAT-ready export utilities;
+- local artifact bundles with run manifests;
+- optional MinIO upload as a local S3-style artifact mirror.
 
-Versioned:
+## What it is not
 
-- source code;
-- ROS2 packages;
-- configs;
-- scripts;
-- tooling;
-- this README.
+This project is not:
 
-Not versioned:
+- an operational maritime autonomy system;
+- validated on real harbor trials;
+- a production detector;
+- a claim of benchmark-leading model accuracy;
+- a safety-certified perception stack;
+- a defense product;
+- a replacement for field testing, labeling QA, or deployment validation.
 
-- private notes under `docs/`;
-- local datasets;
-- sample videos;
-- generated frames;
-- bags;
-- model checkpoints;
-- generated artifacts;
-- generated reports.
+The OAK live path is a hardware-in-the-loop smoke test. It proves that the live camera stream can enter the same ROS2 perception, metrics, and debugging stack as replay. It does not prove maritime performance.
 
-## Setup
+## Architecture overview
 
-```bash
-make setup
-```
+The current pipeline is organized around a few practical loops:
 
-## Validate tooling
+1. **Replay and perception loop**
+   Replay or live images feed detection, tracking, overlays, water-prior filtering, and metrics.
 
-```bash
-make check
-```
+2. **Robustness loop**
+   Fault injectors simulate frame drops, blur, compression, glare, noise, delay, and jitter.
 
-## Inspect a local video
+3. **Edge profiling loop**
+   Scripts compare PyTorch, ONNX Runtime, and OpenVINO latency/FPS behavior.
 
-Default path:
+4. **Annotation loop**
+   Miners select uncertain frames and unstable tracks, then export them to reviewable formats.
+
+5. **Artifact loop**
+   Run bundles collect configs, reports, predictions, models, screenshots, bags, manifests, and optional MinIO upload metadata.
+
+## Quickstart
+
+From a configured Ubuntu 24.04 + ROS2 Jazzy environment:
 
 ```bash
-data/samples/harbor_sample.mp4
-```
+cd maritime-perception-replay-bench
 
-Run:
-
-```bash
-make inspect-video
-```
-
-Or use a custom local path:
-
-```bash
-make inspect-video SAMPLE_VIDEO=/path/to/video.mp4
-```
-
-## Extract frames
-
-```bash
-make frames
-```
-
-## ROS2 build
-
-```bash
-cd ros2_ws
 source /opt/ros/jazzy/setup.bash
-colcon build --symlink-install
+source .venv/bin/activate
+
+cd ros2_ws
+python -m colcon build --symlink-install
 source install/setup.bash
 cd ..
 ```
 
-## Run video replay
-
-Default sample path:
+Run a clean replay/debugging workflow:
 
 ```bash
-data/samples/harbor_sample.mp4
+make run-clean
 ```
 
-Run:
+Run robustness benchmarks:
 
 ```bash
-make run-replay
+make benchmark-robustness
+make robustness-report
 ```
 
-Or launch directly:
+Run edge profiling if the model and sample frames are available:
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-source ros2_ws/install/setup.bash
-
-ros2 launch maritime_bringup replay_pipeline.launch.py \
-  video_path:=data/samples/harbor_sample.mp4 \
-  loop:=true
+make bench-onnx
+make bench-openvino
+make compare-runtimes
 ```
 
-Expected replay topics:
+Run live OAK smoke test if hardware is connected:
+
+```bash
+make oak-live
+```
+
+Mine and export annotation candidates:
+
+```bash
+make mine-uncertain
+make mine-unstable
+make export-annotation
+```
+
+Package a local run artifact bundle:
+
+```bash
+make package-run
+```
+
+## Main capabilities
+
+### Replay and perception
+
+The project uses ROS2 launch files and custom packages to run detection, tracking, overlays, water-prior filtering, and metrics in a repeatable way.
+
+### Metrics and observability
+
+The metrics stack tracks runtime FPS, active tracks, estimated dropped frames, end-to-end latency, detector latency, timing skew, and queue delay. Debug layouts are included for RViz and Foxglove-style inspection.
+
+### Fault injection
+
+Fault injection nodes simulate degraded visual or temporal conditions:
+
+- frame drop;
+- blur;
+- compression artifacts;
+- glare;
+- noise;
+- artificial delay;
+- jitter.
+
+These are used to compare clean and degraded behavior under controlled scenarios.
+
+### Edge profiling
+
+The project includes scripts for ONNX Runtime, OpenVINO, and runtime comparison. The point is to reason about deployment tradeoffs using p50/p95 latency and FPS, not just average speed.
+
+### Live OAK path
+
+The OAK camera path uses DepthAI and publishes live RGB frames into the same ROS2 perception stack. This validates integration and timing behavior, not field performance.
+
+### Annotation mining
+
+The annotation mining workflow finds:
+
+- uncertain frames;
+- low-confidence detections;
+- small objects;
+- frames with many detections;
+- unstable tracks;
+- missed-frame track events;
+- short-lived or fragmented track behavior.
+
+Mined samples can be exported to COCO/JSON or a CVAT-ready review folder while preserving model confidence, timestamps, source paths, mining reason, and track metadata.
+
+### Artifact registry
+
+Run bundles are stored locally under ignored artifact directories and can include:
+
+- config files;
+- bags;
+- metrics;
+- predictions;
+- screenshots;
+- models;
+- reports;
+- run manifests;
+- optional MinIO upload manifests.
+
+The key idea is lineage: benchmark numbers and field-debugging results should be traceable to code, config, model, scenario, and machine context.
+
+## Repository map
 
 ```text
-/camera/image_raw
-/debug/frame_info
+configs/                         YAML configs and project notes
+docker/                          optional local MinIO compose file
+foxglove/layouts/                 debugging layouts
+rviz/                             RViz debug layout
+ros2_ws/src/                      ROS2 packages
+scripts/                          benchmark, export, artifact, and utility scripts
+schemas/                          JSON schemas for run manifests
 ```
 
-## Inspect replay topics
+Generated reports, models, local artifacts, bags, screenshots, caches, and MinIO data are intentionally ignored by Git.
 
-In another terminal:
+## Important commands
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-source ros2_ws/install/setup.bash
-
-ros2 topic list
-ros2 topic hz /camera/image_raw
-ros2 topic echo /debug/frame_info --once
+make run-clean
+make run-dropframes
+make run-blur
+make run-delay
+make run-glare
+make benchmark-robustness
+make robustness-report
+make bench-onnx
+make bench-openvino
+make compare-runtimes
+make oak-live
+make mine-uncertain
+make mine-unstable
+make export-annotation
+make package-run
+make minio-up
+make minio-upload
+make minio-down
 ```
 
-## Record a sample bag
+## Engineering scope
 
-With replay running in another terminal:
+This project covers the practical infrastructure around a perception pipeline:
 
-```bash
-make record-bag
-```
+- repeatable replay;
+- live sensor integration;
+- runtime instrumentation;
+- controlled fault injection;
+- latency and FPS profiling;
+- failure mining;
+- annotation export;
+- artifact lineage;
+- reproducible setup and run documentation.
 
-The bag is written under:
+The focus is the workflow around shipping and debugging perception systems: being able to replay data, inject failures, measure runtime behavior, inspect live sensor timing, select useful samples for review, and preserve enough run metadata to reproduce results later.
 
-```text
-data/bags/
-```
+The project does not treat one detector checkpoint as the product. The detector is one component inside a larger loop for debugging, profiling, data selection, and artifact traceability.
 
-Bags are local-only and ignored by Git.
+## Project positioning
 
-## Inspect a bag
+This is a prototype testbed for perception workflow development. It is useful for validating integration paths, comparing runtime behavior, exercising failure cases, and building a repeatable data-review loop.
 
-```bash
-make bag-info BAG=data/bags/<bag_name>
-```
+It should be read as an engineering bench rather than a finished application. The strongest part of the project is the end-to-end workflow: replay or live input, perception nodes, metrics, failure injection, annotation mining, exports, and run manifests.
 
-Or directly:
+## Limitations
 
-```bash
-source /opt/ros/jazzy/setup.bash
-ros2 bag info data/bags/<bag_name>
-```
+Current limitations include:
 
-## Play a bag
-
-```bash
-make bag-play BAG=data/bags/<bag_name>
-```
-
-Or directly:
-
-```bash
-source /opt/ros/jazzy/setup.bash
-ros2 bag play data/bags/<bag_name>
-```
-
-## Key ROS2 packages
-
-```text
-maritime_msgs      Custom ROS2 interfaces for replay, tracking and observability
-replay_tools       Replay nodes and replay-related configuration
-maritime_bringup   Launch files and top-level pipeline entry points
-```
-
-## Main topic contracts
-
-```text
-/camera/image_raw    sensor_msgs/msg/Image
-/debug/frame_info    maritime_msgs/msg/FrameDebug
-/detections          vision_msgs/msg/Detection2DArray
-/tracks              maritime_msgs/msg/Track2DArray
-/metrics/runtime     maritime_msgs/msg/RuntimeMetrics
-```
-
-## Key configs
-
-```text
-configs/datasets.yaml
-configs/scenarios.yaml
-configs/topic_schema.yaml
-configs/replay.yaml
-configs/qos_profiles.yaml
-configs/rosbag_strategy.yaml
-configs/timing_qos_policy.yaml
-configs/artifact_layout.yaml
-configs/artifact_strategy.yaml
-configs/part1_acceptance.yaml
-```
-
-## Artifact layout
-
-```text
-data/bags/                 Local ROS2 replay logs
-artifacts/metrics/         Runtime and evaluation metrics
-artifacts/predictions/     Detector/tracker outputs and uncertain frames
-artifacts/screenshots/     Demo and debugging screenshots
-artifacts/models/          Checkpoints, ONNX and runtime exports
-artifacts/manifests/       Dataset, bag and experiment metadata
-reports/                   Local generated reports and acceptance notes
-```
-
-These outputs are intentionally ignored by Git, except for `.gitkeep` placeholders where needed.
-
-## Project layout
-
-```text
-configs/      Runtime, dataset, scenario, topic, QoS and artifact configuration
-scripts/      Utility scripts for ingest, preprocessing and rosbag recording
-data/         Local-only datasets, samples, frames and bags
-artifacts/    Local-only metrics, predictions, screenshots, models and manifests
-reports/      Local-only generated reports
-ros2_ws/      ROS2 workspace
-```
-
-## Part 1 acceptance
-
-Part 1 establishes a reproducible ROS2 replay foundation.
-
-Acceptance status:
-
-- repo structure exists;
-- ROS2 workspace builds;
-- video replay publishes `/camera/image_raw`;
-- frame debug metadata is published on `/debug/frame_info`;
-- sample bags can be recorded;
-- sample bags can be inspected with `ros2 bag info`;
-- sample bags can be replayed with `ros2 bag play`;
-- dataset/source decisions are configured;
-- scenario design is configured;
-- topic schema is configured;
-- QoS and timing policy are configured;
-- artifact layout is configured.
-
-Part 1 prepares the project for Part 2: detection, tracking, metrics and evaluation workflows.
-
-## Scope
-
-This is not an operational maritime detection system. It is a reproducible engineering prototype for building and debugging a maritime perception replay workflow.
+- no real harbor-trial validation;
+- no claim of production accuracy;
+- no safety certification;
+- no calibrated maritime dataset release;
+- OAK live testing has been used as an integration smoke test;
+- depth is not yet part of the core pipeline;
+- acoustic processing is currently a prototype lane;
+- MinIO upload is optional and local-first;
+- generated artifacts are ignored and must be regenerated locally.
 
 
-Current status: Detector/tracker perception core implemented.
+## Next steps
+
+Possible next steps:
+
+- stronger architecture diagram and demo script;
+- benchmark summary and failure analysis;
+- acoustic classifier lane;
+- AIS/context fusion;
+- better field-data ingestion workflow;
+- improved labeling QA;
+- deployment hardening for ONNX/OpenVINO;
+- long-running live sensor stability tests.
