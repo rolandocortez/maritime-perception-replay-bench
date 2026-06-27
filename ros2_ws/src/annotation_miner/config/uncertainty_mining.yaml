@@ -1,0 +1,19 @@
+uncertain_frame_miner:
+  ros__parameters:
+    image_topic: "/camera/image_raw"
+    detections_topic: "/detections"
+    detections_type: "vision_msgs/msg/Detection2DArray"
+    output_dir: "reports/annotation/uncertain_frames"
+
+    min_confidence: 0.20
+    max_confidence: 0.45
+    small_object_area_ratio: 0.01
+    many_detections_count: 5
+
+    waterline_y_ratio: 0.35
+    waterline_margin_ratio: 0.05
+    enable_waterline_rules: true
+
+    save_every_n_frames: 1
+    max_saved_frames: 200
+    use_sim_time: false
