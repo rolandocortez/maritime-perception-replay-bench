@@ -1,0 +1,36 @@
+benchmark_summary:
+  purpose: "Executive benchmark interpretation for Part 5 demo package."
+
+  generated_outputs:
+    markdown: "reports/benchmark_summary.md"
+    csv: "reports/benchmark_summary.csv"
+    figures:
+      - "reports/figures/latency_comparison.png"
+      - "reports/figures/fps_comparison.png"
+      - "reports/figures/runtime_comparison.png"
+
+  source_inputs:
+    robustness: "reports/robustness/summary.csv"
+    runtime_comparison: "reports/edge/runtime_comparison.csv"
+    live_oak_smoke_test: "manual smoke-test logs and metrics topics"
+
+  interpretation_policy:
+    - "Do not present the report as a model accuracy benchmark."
+    - "Use p50 and p95 latency, not only average FPS."
+    - "Separate replay robustness results from live OAK smoke-test claims."
+    - "Keep poor or ambiguous results visible."
+    - "Treat generated reports and figures as local artifacts, not source files."
+
+  key_takeaways:
+    - "Artificial delay was the clearest latency stressor."
+    - "Blur increased detections/frame and tracking load."
+    - "Frame drop increased tail latency."
+    - "Glare approximation requires careful interpretation."
+    - "ONNX Runtime and OpenVINO were both much faster than the PyTorch CPU baseline in the measured setup."
+    - "p95 latency and track behavior were more useful than average FPS alone."
+
+  boundaries:
+    - "No real harbor-trial validation is claimed."
+    - "OAK live path is a hardware-in-the-loop integration smoke test."
+    - "Acoustic processing is a prototype lane."
+    - "Reports should be tied to run manifests for traceability."
