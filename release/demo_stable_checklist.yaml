@@ -1,0 +1,92 @@
+demo_stable_checklist:
+  purpose: "Freeze a reliable demo-stable version of the maritime perception replay bench."
+
+  build:
+    - item: "colcon build --symlink-install passes"
+      status: "pending_final_run"
+    - item: "source ros2_ws/install/setup.bash works"
+      status: "pending_final_run"
+    - item: "Python utility scripts compile"
+      status: "pending_final_run"
+
+  core_demo:
+    - item: "make run-clean works or has recorded/screenshot fallback"
+      status: "pending_final_run"
+    - item: "make run-blur or another degraded scenario works or has fallback"
+      status: "pending_final_run"
+    - item: "overlay output is available"
+      status: "available_or_regeneratable"
+    - item: "runtime metrics are available"
+      status: "available_or_regeneratable"
+
+  benchmarks:
+    - item: "benchmark summary can be generated locally"
+      status: "available"
+    - item: "p50 and p95 latency are included"
+      status: "available"
+    - item: "bad or ambiguous results are not hidden"
+      status: "available"
+
+  oak:
+    - item: "OAK path works or is clearly marked optional"
+      status: "optional"
+    - item: "OAK live path is described as hardware-in-the-loop smoke test"
+      status: "available"
+    - item: "No claim is made that OAK validates maritime performance"
+      status: "available"
+
+  annotation_and_artifacts:
+    - item: "uncertain-frame mining exists"
+      status: "available"
+    - item: "unstable-track mining exists"
+      status: "available"
+    - item: "annotation export path exists"
+      status: "available"
+    - item: "artifact bundle generation exists"
+      status: "available"
+    - item: "run manifest utilities exist"
+      status: "available"
+
+  failure_analysis:
+    - item: "failure analysis generator exists"
+      status: "available"
+    - item: "at least five failure categories are documented"
+      status: "available"
+    - item: "failure categories separate perception, tracking, timing, and data issues"
+      status: "available"
+
+  demo_package:
+    - item: "2-minute demo plan exists locally"
+      status: "local_ignored_asset"
+    - item: "10-15 minute deep-dive plan exists locally"
+      status: "local_ignored_asset"
+    - item: "backup demo path exists"
+      status: "available"
+    - item: "demo does not depend on internet"
+      status: "available"
+    - item: "demo does not depend on OAK being available live"
+      status: "available"
+
+  git_release:
+    - item: "integration/part-5-demo-interview-package is clean"
+      status: "pending_final_check"
+    - item: "main includes Part 5"
+      status: "pending_final_merge"
+    - item: "tag v1.0-demo-stable exists"
+      status: "pending_final_tag"
+    - item: "branch demo-stable exists"
+      status: "pending_final_branch"
+    - item: "no generated reports, models, data, videos, screenshots, bags, or artifacts are committed"
+      status: "pending_final_check"
+    - item: "no secrets are committed"
+      status: "pending_final_check"
+
+  positioning:
+    - item: "README is honest and technical"
+      status: "available"
+    - item: "limitations are clear"
+      status: "available"
+    - item: "no production, defense, or field-validation overclaims"
+      status: "available"
+    - item: "OAK and acoustic limitations are stated clearly"
+      status: "available"

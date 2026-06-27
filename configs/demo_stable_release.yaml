@@ -1,0 +1,43 @@
+demo_stable_release:
+  purpose: "Release preparation notes for the demo-stable branch and tag."
+
+  release_branch: "demo-stable"
+  release_tag: "v1.0-demo-stable"
+  integration_branch: "integration/part-5-demo-interview-package"
+
+  stable_demo_assets:
+    committed:
+      - "README.md"
+      - "configs/demo_package.yaml"
+      - "configs/benchmark_summary.yaml"
+      - "configs/failure_analysis.yaml"
+      - "configs/architecture_diagrams.yaml"
+      - "configs/reproducibility_runbook.yaml"
+      - "scripts/build_benchmark_summary.py"
+      - "scripts/build_failure_analysis.py"
+      - "scripts/create_run_artifact_bundle.py"
+      - "scripts/upload_artifacts_to_minio.py"
+      - "release/demo_stable_checklist.yaml"
+    local_ignored:
+      - "demo/*.md"
+      - "demo/screenshots/"
+      - "demo/video/"
+      - "reports/"
+      - "artifacts/"
+      - "models/"
+      - "data/"
+
+  final_validation_policy:
+    - "Build before final merge when possible."
+    - "Run dry-run checks for Make targets."
+    - "Generate benchmark and failure reports locally."
+    - "Generate at least one artifact bundle locally."
+    - "Keep OAK as optional hardware validation."
+    - "Do not commit generated reports or heavy artifacts."
+
+  claim_boundaries:
+    - "The project is a prototype engineering bench."
+    - "It is not an operational maritime autonomy system."
+    - "OAK live path is an integration smoke test."
+    - "Benchmarks measure runtime and robustness behavior, not production accuracy."
+    - "Failure analysis is diagnostic, not field validation."
