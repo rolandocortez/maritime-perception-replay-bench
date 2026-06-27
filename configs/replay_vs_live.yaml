@@ -1,0 +1,68 @@
+replay_vs_live_sensor_path:
+  purpose: "Document practical differences between deterministic replay and live OAK sensor input."
+
+  replay_advantages:
+    - "Reproducible input stream."
+    - "Deterministic debugging and repeated benchmark runs."
+    - "Easier failure isolation because the same frames can be replayed."
+    - "Stable input timing when the replay node controls publish rate."
+    - "Useful for comparing clean versus degraded scenarios."
+
+  live_path_risks:
+    - "Driver timestamps may differ from ROS receive time."
+    - "USB bandwidth can limit effective camera FPS."
+    - "Frames may be dropped before the perception stack receives them."
+    - "Exposure and auto-white-balance can change image statistics frame to frame."
+    - "Operating system scheduling can create queueing and tail latency."
+    - "CPU load can reduce detector, tracker, overlay, and metrics throughput."
+    - "Thermal throttling can change performance during longer runs."
+    - "Lighting and motion blur are not controlled like replay data."
+
+  debug_checklist:
+    - step: 1
+      item: "Check topic rate."
+      command_examples:
+        - "ros2 topic hz /oak/rgb/image_raw"
+        - "ros2 topic hz /detections"
+        - "ros2 topic hz /tracks"
+        - "ros2 topic hz /debug/overlay_image"
+    - step: 2
+      item: "Check header timestamps."
+      command_examples:
+        - "ros2 topic echo /oak/rgb/image_raw --once"
+        - "ros2 topic echo /detections --once"
+    - step: 3
+      item: "Check sensor-to-detection and sensor-to-tracking latency."
+      command_examples:
+        - "ros2 topic echo /metrics/timing --once"
+        - "ros2 topic echo /metrics/diagnostics --once"
+    - step: 4
+      item: "Check dropped-frame estimate and runtime rates."
+      command_examples:
+        - "ros2 topic echo /metrics/runtime --once"
+    - step: 5
+      item: "Check queueing and p95 latency before changing the model."
+      reason: "A model can look bad when the real issue is stale frames or queue buildup."
+    - step: 6
+      item: "Check CPU/RAM and thermal behavior."
+      command_examples:
+        - "htop"
+        - "watch -n 1 sensors"
+
+  h38_observed_live_result:
+    oak_image_topic: "/oak/rgb/image_raw"
+    detector_topic: "/detections"
+    tracker_topic: "/tracks"
+    overlay_topic: "/debug/overlay_image"
+    metrics_topic: "/metrics/runtime"
+    observed_input_fps: "about 26-27 Hz during smoke test"
+    observed_detector_fps: "about 20 Hz during smoke test"
+    observed_tracker_fps: "about 20 Hz during smoke test"
+    observed_overlay_fps: "about 21 Hz during smoke test"
+    active_tracks_seen: true
+
+  limitations:
+    - "The OAK live test validates sensor integration and timing behavior, not maritime performance."
+    - "Indoor or desk-camera scenes are not representative harbor validation data."
+    - "Short smoke tests do not prove long-duration stability."
+    - "Metrics should be interpreted together: FPS alone is not enough."

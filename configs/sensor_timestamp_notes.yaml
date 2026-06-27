@@ -1,0 +1,57 @@
+sensor_timestamp_notes:
+  purpose: "Field-debugging notes for live camera timestamps, ROS receive time, and perception timing."
+
+  timestamp_sources:
+    sensor_header_stamp:
+      meaning: "Timestamp carried by the incoming Image message header."
+      risk: "May represent ROS publication time, device capture time, or wrapper time depending on driver implementation."
+    node_receive_time:
+      meaning: "Time when a perception node receives or processes a message."
+      risk: "Includes transport delay, queueing, and OS scheduling."
+    stage_output_stamp:
+      meaning: "Timestamp propagated or assigned by detector, tracker, overlay, or metrics nodes."
+      risk: "If stage outputs use current time instead of source image time, latency/skew interpretation changes."
+
+  live_debugging_questions:
+    - "Is the camera publishing at the expected rate?"
+    - "Are header timestamps monotonic?"
+    - "Does detection FPS match image FPS, or is the detector falling behind?"
+    - "Is p95 latency much higher than p50?"
+    - "Are queue delay warnings appearing?"
+    - "Do tracks become unstable when detector FPS drops?"
+    - "Does lowering resolution from 1080p to 720p improve stability?"
+    - "Does the issue persist with replay, or only with live camera input?"
+
+  warning_patterns:
+    latency_warning:
+      meaning: "A stage is processing old sensor data or taking too long."
+      first_checks:
+        - "CPU load"
+        - "Detector inference time"
+        - "Queue delay"
+        - "Image resolution"
+    skew_warning:
+      meaning: "Timestamps between pipeline stages are not aligned."
+      first_checks:
+        - "Header timestamp propagation"
+        - "Clock source"
+        - "Stage output timestamp policy"
+    queue_warning:
+      meaning: "Frames are arriving faster than a stage can process them."
+      first_checks:
+        - "Detector runtime"
+        - "Frame rate"
+        - "Resolution"
+        - "Queue size"
+        - "Whether old frames should be dropped"
+
+  practical_rules:
+    - "Check topic rates and timestamps before changing the model."
+    - "Use p95 latency as a primary field-debugging signal."
+    - "Compare replay and live behavior using the same detector/tracker/overlay nodes."
+    - "Prefer a stable lower-resolution live stream over a high-resolution stream that queues stale frames."
+    - "Do not claim hardware smoke tests validate maritime performance."
+
+  interview_answer:
+    question: "What changes when moving from replay to live sensors?"
+    answer: "Replay is deterministic and great for debugging; live sensors introduce driver timing, USB bandwidth, exposure, dropped frames, and OS scheduling effects. I would check topic rates and header timestamps before changing the model."
