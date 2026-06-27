@@ -64,3 +64,5 @@ data/acoustic/*
 !/reports/benchmarks/.gitkeep
 # Generated robustness report outputs
 /reports/robustness/*
+# Generated edge/runtime benchmark outputs
+/reports/edge/*
