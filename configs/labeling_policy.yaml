@@ -1,0 +1,65 @@
+labeling_policy:
+  purpose: "Define a consistent review and annotation policy for mined maritime perception samples."
+
+  classes:
+    vessel:
+      description: "Boat, ship, kayak, sailboat, ferry, or other watercraft."
+      label_when: "Object is visibly a watercraft or likely maritime vessel."
+    buoy_marker:
+      description: "Buoy, channel marker, navigation marker, floating marker, or similar maritime aid."
+      label_when: "Object is a fixed or floating marker relevant to navigation/perception."
+    person_or_object_in_water:
+      description: "Person, swimmer, floating debris, or object that may represent a safety-critical obstacle."
+      label_when: "Object is in or near the water surface and could affect navigation."
+    unknown_obstacle:
+      description: "Ambiguous object that may be relevant but cannot be confidently assigned to a known class."
+      label_when: "Annotator can localize the object but cannot confidently classify it."
+    background_ignore:
+      description: "Non-target region, ambiguous visual clutter, reflections, glare, wakes, or unlabelable objects."
+      label_when: "Object should not become a positive training example."
+
+  review_priorities:
+    - priority: 1
+      name: "low_confidence_near_threshold"
+      source: "uncertain_frame_miner"
+      reason: "These are likely to improve model decision boundaries."
+    - priority: 2
+      name: "small_objects"
+      source: "uncertain_frame_miner"
+      reason: "Small maritime targets are often safety-critical and easy to miss."
+    - priority: 3
+      name: "unstable_tracks"
+      source: "unstable_track_miner"
+      reason: "Temporal failures reveal fragmentation, missed frames, and ID instability."
+    - priority: 4
+      name: "false_positives_near_glare_wakes"
+      source: "fault and live debugging workflows"
+      reason: "Glare, wakes, and reflections can create recurring false positives."
+    - priority: 5
+      name: "out_of_roi_or_waterline_disagreement"
+      source: "water prior and uncertainty mining"
+      reason: "Detector/context disagreement should be reviewed before changing labels or priors."
+
+  annotation_rules:
+    - "Preserve original frame timestamp and source metadata."
+    - "Label original raw frames only."
+    - "Do not relabel derived overlay/debug images as training data."
+    - "Keep model confidence and mining reason attached to each reviewed sample."
+    - "Use unknown_obstacle when the object is real but class is ambiguous."
+    - "Use background_ignore for glare, wake, reflection, or unlabelable clutter."
+    - "Do not force a positive class when the object is unclear."
+    - "Prefer fewer consistent labels over many noisy labels."
+    - "Review temporal context for unstable-track samples before deciding if the issue is detection or tracking."
+
+  quality_checks:
+    - "Check that boxes tightly cover visible object extent."
+    - "Check that class choice follows taxonomy, not model prediction."
+    - "Check that duplicate near-identical frames are not overrepresented."
+    - "Check that annotation exports preserve source image linkage."
+    - "Check that ignored regions are not accidentally used as positive objects."
+
+  forbidden_practices:
+    - "Do not label screenshots of overlays as training images."
+    - "Do not convert every model prediction into a ground-truth label without review."
+    - "Do not train on ambiguous objects as confident positives."
+    - "Do not mix indoor OAK smoke-test labels with maritime validation claims."
