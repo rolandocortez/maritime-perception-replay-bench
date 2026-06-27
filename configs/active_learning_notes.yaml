@@ -1,0 +1,74 @@
+active_learning_notes:
+  purpose: "Describe how mined samples feed a controlled annotation and model-improvement loop."
+
+  loop:
+    - step: 1
+      name: "Run perception pipeline"
+      description: "Use replay or live OAK input through the same detector, tracker, overlay, and metrics stack."
+    - step: 2
+      name: "Mine high-value samples"
+      description: "Collect uncertain frames and unstable tracks instead of randomly sampling frames."
+      tools:
+        - "annotation_miner uncertain_frame_node"
+        - "annotation_miner unstable_track_node"
+    - step: 3
+      name: "Export review format"
+      description: "Convert mined outputs to COCO JSON or CVAT-ready folders while preserving predictions and metadata."
+      tools:
+        - "scripts/export_mined_frames_to_coco.py"
+        - "scripts/export_cvat_task_folder.py"
+    - step: 4
+      name: "Human review"
+      description: "Annotators apply the labeling policy, resolve ambiguous samples, and avoid converting weak predictions into noisy labels."
+    - step: 5
+      name: "Dataset update"
+      description: "Accepted labels are added to a curated dataset split with source/run metadata."
+    - step: 6
+      name: "Retrain or fine-tune"
+      description: "Model updates are evaluated against replay benchmarks and robustness scenarios."
+    - step: 7
+      name: "Regression check"
+      description: "Confirm the new model improves target failure modes without degrading clean replay or live performance."
+
+  sample_selection_strategy:
+    uncertain_frames:
+      examples:
+        - "low confidence near threshold"
+        - "small objects"
+        - "many detections in one frame"
+        - "detections near waterline or outside expected ROI"
+      value: "Improves per-frame detector boundaries and class decisions."
+    unstable_tracks:
+      examples:
+        - "many missed frames"
+        - "short-lived tracks"
+        - "possible ID switches"
+        - "fragmented contacts"
+      value: "Finds temporal failures that per-frame confidence can miss."
+    export_metadata:
+      preserve:
+        - "source image path"
+        - "frame timestamp"
+        - "model confidence"
+        - "mining reason"
+        - "track ID and event type"
+        - "clip/context linkage"
+
+  noisy_label_prevention:
+    - "Define class taxonomy before labeling."
+    - "Use ignore/unknown classes for ambiguous samples."
+    - "Review raw frames rather than overlays."
+    - "Keep model predictions as suggestions, not ground truth."
+    - "Use temporal context for track failures."
+    - "Reject samples where the object cannot be localized consistently."
+
+  interview_answers:
+    avoid_noisy_labels:
+      question: "How would you avoid noisy labels?"
+      answer: "I would define a labeling policy early: class taxonomy, ignore rules, ambiguous object handling, and review priorities. Noisy labels can hurt more than a smaller but consistent dataset."
+    connect_outputs_to_annotation:
+      question: "How would you connect model outputs to human annotation?"
+      answer: "I would export uncertain or unstable samples with predictions and metadata into reviewable formats like COCO or CVAT-ready folders. The key is preserving run context and model confidence, not just dumping images."
+    reduce_annotation_cost:
+      question: "How would you reduce annotation cost?"
+      answer: "I would not randomly label frames. I would mine uncertain or high-value frames such as low confidence detections, small objects, unstable tracks, and context disagreements."
