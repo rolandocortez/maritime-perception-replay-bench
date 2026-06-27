@@ -1,0 +1,45 @@
+artifact_registry:
+  purpose: "Local-first run artifact registry for field/debugging runs without depending on cloud storage."
+
+  root_dir: "artifacts"
+  index_file: "artifacts/index.csv"
+
+  run_layout:
+    run_manifest: "run_manifest.yaml"
+    config: "config/"
+    bags: "bags/"
+    metrics: "metrics/"
+    predictions: "predictions/"
+    screenshots: "screenshots/"
+    models: "models/"
+    reports: "reports/"
+
+  tracked_in_git:
+    - "scripts/create_run_artifact_bundle.py"
+    - "configs/artifact_registry.yaml"
+    - ".gitignore"
+
+  ignored_local_outputs:
+    - "artifacts/index.csv"
+    - "artifacts/runs/*"
+    - "copied models"
+    - "copied reports"
+    - "bags"
+    - "screenshots"
+    - "metrics dumps"
+    - "predictions dumps"
+
+  required_manifest_fields:
+    - "run_id"
+    - "run_name"
+    - "created_utc"
+    - "git_commit"
+    - "git_branch"
+    - "source_reports"
+    - "source_model"
+    - "copied_files"
+    - "notes"
+
+  interview_answer:
+    question: "How would you organize field test data?"
+    answer: "I would organize each run as a bundle with config, bags, metrics, predictions, model version, screenshots, reports, and a manifest. Without lineage, debugging field logs becomes guesswork."

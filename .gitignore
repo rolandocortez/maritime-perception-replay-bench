@@ -69,3 +69,5 @@ data/acoustic/*
 # Generated model and benchmark input artifacts
 /data/sample_frames/*
 /models/onnx/*
+# Local run artifact registry
+artifacts/*
