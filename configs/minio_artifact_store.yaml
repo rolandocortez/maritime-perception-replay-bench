@@ -1,0 +1,37 @@
+minio_artifact_store:
+  purpose: "Optional local S3-style artifact mirror for run bundles."
+
+  optional: true
+  local_first_dependency: "artifacts/runs/<run_id> produced by scripts/create_run_artifact_bundle.py"
+
+  compose_file: "docker/minio-compose.yml"
+  endpoint_url: "http://localhost:9000"
+  console_url: "http://localhost:9001"
+  default_bucket: "maritime-replay-bench"
+
+  credentials_for_local_dev_only:
+    access_key: "minioadmin"
+    secret_key: "minioadmin"
+
+  upload_script: "scripts/upload_artifacts_to_minio.py"
+
+  expected_flow:
+    - "Create a local run bundle with scripts/create_run_artifact_bundle.py."
+    - "Start MinIO with docker compose -f docker/minio-compose.yml up -d."
+    - "Upload the run directory with scripts/upload_artifacts_to_minio.py."
+    - "Keep artifacts local/ignored; only scripts and configs are versioned."
+
+  git_policy:
+    committed:
+      - "docker/minio-compose.yml"
+      - "scripts/upload_artifacts_to_minio.py"
+      - "configs/minio_artifact_store.yaml"
+      - ".gitignore"
+    ignored:
+      - "docker/minio-data/"
+      - "artifacts/index.csv"
+      - "artifacts/runs/*"
+
+  interview_answer:
+    question: "How would cloud ingestion fit into this?"
+    answer: "I implemented a local artifact registry first, then optionally mirrored bundles into MinIO as an S3-like store. The key design is run manifests and lineage; the cloud backend can change later."
