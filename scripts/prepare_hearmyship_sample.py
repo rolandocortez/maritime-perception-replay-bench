@@ -56,8 +56,16 @@ def repo_root() -> Path:
 
 
 def to_repo_rel(path: Path, root: Path) -> str:
+    """Return a repo-relative path without dereferencing symlinks.
+
+    This is intentional: prepared samples may store video/audio as symlinks
+    under data/multimodal/hearmyship/prepared/<sample_id>/, and the manifest
+    should point to that prepared path rather than the raw download target.
+    """
     try:
-        return str(path.resolve().relative_to(root.resolve()))
+        if path.is_absolute():
+            return str(path.relative_to(root))
+        return str(path)
     except Exception:
         return str(path)
 
