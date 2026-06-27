@@ -12,6 +12,7 @@ import rclpy
 from cv_bridge import CvBridge
 from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
 
 from maritime_msgs.msg import Track2DArray
@@ -77,7 +78,7 @@ class UnstableTrackMiner(Node):
 
         self._init_manifest()
 
-        self.create_subscription(Image, self.image_topic, self.on_image, 10)
+        self.create_subscription(Image, self.image_topic, self.on_image, qos_profile_sensor_data)
         self.create_subscription(Track2DArray, self.tracks_topic, self.on_tracks, 10)
 
         self.get_logger().info(
