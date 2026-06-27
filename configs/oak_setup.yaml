@@ -1,0 +1,33 @@
+oak_setup:
+  purpose: Document OAK/DepthAI ingest smoke-test setup without claiming maritime
+    validation.
+  install:
+    python_dependency: python -m pip install depthai
+  launch:
+    oak_topics: ros2 launch oak_ingest oak_ingest.launch.py
+    standard_topics: ros2 launch oak_ingest oak_ingest.launch.py remap_to_standard_camera_topics:=true
+  expected_topics:
+    oak:
+      image: /oak/rgb/image_raw
+      camera_info: /oak/rgb/camera_info
+      status: /oak/status
+    standard_remap:
+      image: /camera/image_raw
+      camera_info: /camera/camera_info
+  smoke_tests:
+  - ros2 topic list | grep oak
+  - ros2 topic hz /oak/rgb/image_raw
+  - ros2 topic echo /oak/status --once
+  limitations:
+  - This validates live sensor ingest, driver path, topics, timestamps, and stream
+    rate.
+  - It does not validate maritime detection performance.
+  - It does not replace harbor field data.
+  - If no OAK is connected, the node stays alive and publishes status with connected=false.
+  depthai_api_note:
+    version: DepthAI v3 style
+    why: DepthAI v3 removed explicit XLink nodes; this wrapper uses Camera.requestOutput().createOutputQueue()
+      and pipeline.start().
+    official_ros_driver_note: For full production ROS integration on Jazzy, Luxonis
+      documents depthai_ros_driver_v3. This package is a lightweight smoke-test ingest
+      path for this project.

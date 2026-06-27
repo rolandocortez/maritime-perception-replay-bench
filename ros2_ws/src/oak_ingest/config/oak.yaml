@@ -1,0 +1,16 @@
+oak_status_node:
+  ros__parameters:
+    camera_name: "oak"
+    rgb_resolution: "1080p"
+    fps: 30.0
+    publish_depth: false
+    publish_imu: false
+    remap_to_standard_camera_topics: false
+    image_topic: "/oak/rgb/image_raw"
+    camera_info_topic: "/oak/rgb/camera_info"
+    standard_image_topic: "/camera/image_raw"
+    standard_camera_info_topic: "/camera/camera_info"
+    status_topic: "/oak/status"
+    frame_id: "oak_rgb_camera_frame"
+    status_log_every_n_frames: 30
+    use_sim_time: false
