@@ -16,12 +16,6 @@ def generate_launch_description():
         "oak_ingest.launch.py",
     )
 
-    metrics_launch = os.path.join(
-        get_package_share_directory("metrics_node"),
-        "launch",
-        "metrics.launch.py",
-    )
-
     detector_model = LaunchConfiguration("detector_model")
     detector_device = LaunchConfiguration("detector_device")
     image_topic = LaunchConfiguration("image_topic")
@@ -123,9 +117,22 @@ def generate_launch_description():
             }],
         ),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(metrics_launch),
-            launch_arguments={}.items(),
-            condition=None,
+        Node(
+            package="metrics_node",
+            executable="metrics_node",
+            name="metrics_node",
+            output="screen",
+            parameters=[{
+                "image_topic": image_topic,
+                "detections_topic": "/detections",
+                "tracks_topic": "/tracks",
+                "overlay_topic": "/debug/overlay_image",
+                "metrics_topic": "/metrics/runtime",
+                "pipeline_topic": "/metrics/pipeline",
+                "timing_topic": "/metrics/timing",
+                "diagnostics_topic": "/metrics/diagnostics",
+                "window_size": 200,
+                "publish_rate_hz": 1.0,
+            }],
         ),
     ])
