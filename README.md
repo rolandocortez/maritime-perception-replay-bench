@@ -4,70 +4,61 @@
 
 A ROS2-based replay and debugging bench for maritime perception workflows.
 
-## Visual tour
+## Project at a glance
 
-This project is easiest to understand as a small test bench for perception experiments.
+This project is a **maritime perception replay and debugging bench**. It is not presented as a production autonomy stack. The practical goal is narrower and useful: take recorded maritime video/audio, replay it through a ROS2 graph, run detection/tracking/acoustic activity, inject faults, collect metrics, and package artifacts so a perception failure can be reproduced and improved later.
 
-It takes maritime video, optional live OAK camera frames, and optional acoustic samples, then turns them into streams that can be replayed, measured, stressed, reviewed, and packaged.
+<p align="center">
+  <img src="assets/readme/maritime_replay_frames.jpg" alt="Maritime replay sample frames" width="860">
+</p>
+
+### What problem it solves
+
+Maritime perception systems often fail in boring but expensive ways: small vessels, glare, wake, horizon clutter, camera/audio timing drift, dropped frames, stale detections, and models that look good on one dataset but fail on another. This repo gives a repeatable way to test those cases instead of only watching a detector window and guessing what happened.
+
+### Current demo story
 
 ```mermaid
 flowchart LR
-    A[Maritime video dataset] --> B[Replay as image stream]
-    O[Optional OAK live camera] --> C[Live image stream]
-    W[Optional WAV acoustic sample] --> X[Acoustic replay / spectrogram]
-
-    B --> D[Detector]
-    C --> D
-
-    D --> E[Detections]
-    E --> F[Tracker]
-    F --> G[Tracks]
-
-    B --> H[Fault injection]
-    H --> D
-
-    E --> M[Metrics]
-    G --> M
-
-    E --> N[Annotation mining]
-    G --> N
-
-    M --> R[Benchmark summary]
-    N --> S[Review exports]
-    R --> T[Artifact bundle]
-    S --> T
+    A[HearMyShip paired sample] --> B[Video replay]
+    A --> C[Audio replay]
+    B --> D[Maritime detector]
+    D --> E[Tracker]
+    C --> F[Acoustic activity score]
+    E --> G[Multimodal debug signal]
+    F --> G
+    G --> H[Reports, overlays, demo assets]
 ```
 
-### Example replay inputs
+The current demo uses a small local HearMyShip sample, a YOLO detector first trained on the Singapore Maritime Dataset and then fine-tuned on HearMyShip frames, plus an acoustic activity lane from the paired WAV sample.
 
-These are representative local replay frames from maritime video samples used by the project.
+<p align="center">
+  <img src="assets/readme/acoustic_spectrogram.png" alt="Acoustic spectrogram example" width="860">
+</p>
 
-![Maritime replay frames](assets/readme/maritime_replay_frames.jpg)
+### Why this is not just a Python detection script
 
-### Acoustic lane preview
+A single Python script is better for making a clean video overlay. This repo keeps ROS2 because the engineering problem is bigger than drawing a box:
 
-The acoustic lane is currently a prototype path. The spectrogram below shows how a `.wav` sample can be turned into a visual signal for future event detection work.
-
-![Acoustic spectrogram](assets/readme/acoustic_spectrogram.png)
-
-### What the system does in plain language
-
-| Step | Plain-language meaning |
+| Need | Why the bench exists |
 |---|---|
-| Replay | Play a maritime video back into the system as if it were a sensor stream. |
-| Detection | Find objects or contacts in each image frame. |
-| Tracking | Connect detections over time so contacts do not appear as isolated single-frame events. |
-| Metrics | Measure FPS, p50/p95 latency, active tracks, dropped-frame estimates, and timing behavior. |
-| Fault injection | Stress the same pipeline with blur, frame drops, delay, glare approximation, noise, or jitter. |
-| Annotation mining | Save difficult frames and unstable tracks for human review. |
-| Artifact packaging | Bundle configs, metrics, predictions, reports, and manifests so a run can be reproduced later. |
+| Replay | Test the same scene again after changing detector, tracker, thresholds, or sync logic. |
+| Metrics | Measure FPS, latency, p50/p95 timing, active tracks, and failure modes. |
+| Fault injection | Stress the pipeline with blur, glare, delay, jitter, dropped frames, compression, and noise. |
+| Multimodal debugging | Compare what visual tracking says with acoustic activity from the paired sample. |
+| Artifact packaging | Save configs, manifests, reports, and model/run metadata so results are reproducible. |
+| Deployment path | Keep the same topic-level architecture for offline replay, OAK camera ingestion, and future live tests. |
 
-### DepthAI ReplayVideo note
+For public README/demo media, a deterministic offline renderer can be used to make a clean frame-aligned GIF/MP4 from the same model, manifest, video, and audio. The ROS2 graph remains the validation and debugging system.
 
-For OAK/DepthAI-style workflows, recorded videos can also be replayed through a DepthAI `ReplayVideo` host node to produce `ImgFrame` messages from files. In this project, that idea fits as an optional replay source: dataset videos can exercise an OAK-like frame path without requiring the physical camera to be pointed at the scene during the demo.
+### Current status
 
-The live OAK path remains useful as a hardware-in-the-loop smoke test, while dataset replay remains the right source for maritime visual examples.
-
+- Working ROS2 replay path for paired video/audio samples.
+- Working detector/tracker/overlay topics for the HearMyShip demo sample.
+- Working acoustic activity score and fusion debug topic.
+- Working benchmark/failure-report artifact flow.
+- Demo detector is **domain-adapted for the current HearMyShip sample**, not claimed as a universal maritime detector.
+- CPU-only ROS inference can lag visually; for polished videos, render offline from the same inputs.
 
 ## Why this exists
 
