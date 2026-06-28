@@ -89,3 +89,6 @@ demo/screenshots/
 /data/multimodal/hearmyship/**/*.flac
 /data/multimodal/hearmyship/**/*.aif
 /data/multimodal/hearmyship/**/*.aiff
+
+# Personal/private project notes
+/personal_notes/

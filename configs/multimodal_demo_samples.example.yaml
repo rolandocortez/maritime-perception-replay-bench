@@ -1,0 +1,25 @@
+samples:
+  - id: demo_001
+    manifest: data/multimodal/hearmyship/prepared/demo_001/manifest.yaml
+    label: "Motorboat"
+    purpose: "baseline paired sample"
+
+  - id: demo_002
+    manifest: data/multimodal/hearmyship/prepared/demo_002/manifest.yaml
+    label: "Fast motorboat"
+    purpose: "high-speed / high-activity example"
+
+  - id: demo_003
+    manifest: data/multimodal/hearmyship/prepared/demo_003/manifest.yaml
+    label: "Sailboat"
+    purpose: "different vessel category"
+
+  - id: demo_004
+    manifest: data/multimodal/hearmyship/prepared/demo_004/manifest.yaml
+    label: "Yacht"
+    purpose: "visual demo variety"
+
+notes:
+  - "Raw media remains local and ignored."
+  - "Use this as a local demo playlist input for H57 rendering."
+  - "Generated GIF/MP4/WAV assets require license review before public redistribution."

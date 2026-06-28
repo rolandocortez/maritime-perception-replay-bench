@@ -1,0 +1,17 @@
+paired_multimodal_replay:
+  ros__parameters:
+    manifest: "data/multimodal/hearmyship/prepared/demo_001/manifest.yaml"
+    loop: false
+    frame_id: "multimodal_replay"
+    raw_image_topic: "/multimodal/video/image_raw"
+    overlay_image_topic: "/multimodal/video/overlay"
+    waveform_topic: "/acoustic/waveform"
+    activity_topic: "/acoustic/activity"
+    fusion_debug_topic: "/fusion/debug_json"
+    contact_candidates_topic: "/fusion/contact_candidates"
+    audio_window_sec: 0.25
+    degradation_start_sec: 4.0
+    degradation_end_sec: 7.0
+    normal_visual_confidence: 0.92
+    degraded_visual_confidence: 0.35
+    apply_visual_degradation: true
