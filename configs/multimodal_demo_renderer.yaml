@@ -1,0 +1,14 @@
+purpose: "Generate polished README/demo assets from the paired manifest, trained detector, video, and audio."
+default_inputs:
+  manifest: data/multimodal/hearmyship/prepared/demo_001/manifest.yaml
+  model: models/trained/maritime_yolo11s_smd_hearmyship_h57/best.pt
+outputs:
+  mp4_with_audio: demo/video/multimodal_replay_demo.mp4
+  readme_gif: assets/readme/multimodal_replay_demo.gif
+  preview: assets/readme/multimodal_replay_demo_preview.jpg
+  fusion_panel: assets/readme/multimodal_fusion_panel.png
+repo_policy:
+  commit_small_readme_assets: true
+  do_not_commit_full_mp4: true
+  do_not_commit_raw_dataset: true
+  do_not_commit_model_weights: true
