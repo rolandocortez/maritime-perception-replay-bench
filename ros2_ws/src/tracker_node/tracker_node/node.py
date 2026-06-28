@@ -16,8 +16,8 @@ class TrackerNode(Node):
         self.declare_parameter("tracks_topic", "/tracks")
         self.declare_parameter("tracker_type", "iou")
         self.declare_parameter("iou_match_threshold", 0.3)
-        self.declare_parameter("max_age_frames", 15)
-        self.declare_parameter("min_hits", 2)
+        self.declare_parameter("max_age_frames", 4)
+        self.declare_parameter("min_hits", 1)
         self.declare_parameter("class_aware", True)
         self.declare_parameter("log_every_n_frames", 10)
 

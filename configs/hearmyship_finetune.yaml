@@ -1,0 +1,34 @@
+# HearMyShip fine-tuning recipe
+
+purpose: >
+  Adapt the SMD-trained maritime detector to the HearMyShip camera domain,
+  where small boats appear close to rocky coastline backgrounds and wakes.
+
+base_model:
+  local_path: models/trained/maritime_yolo11s_smd_h57/best.pt
+  source: "YOLO11s fine-tuned on Singapore Maritime Dataset ObjectGT"
+  note: "Keep model file local or attach it as a GitHub Release asset; do not commit weights."
+
+local_dataset:
+  frame_source: data/training/hearmyship_frames/images
+  yolo_output: data/training/hearmyship_yolo
+  class_names:
+    0: boat
+  annotation_policy:
+    - "Draw boxes around the visible vessel hull/superstructure."
+    - "Do not label wake, rocks, glare, timestamp text, or shoreline."
+    - "Leave label empty when no vessel is visible."
+    - "Use one class initially: boat."
+
+training:
+  recommended_mode: "fine_tune_from_smd_model"
+  colab_base_model_upload: "models/trained/maritime_yolo11s_smd_h57/best.pt"
+  colab_dataset_upload: "hearmyship_yolo_colab.zip"
+  epochs: 60
+  imgsz: 960
+  batch: 4
+  lr0: 0.001
+  patience: 15
+  notes:
+    - "This is intentionally demo/domain adaptation, not a broad detector benchmark."
+    - "Evaluate visually on HearMyShip replay before using in the multimodal demo."
