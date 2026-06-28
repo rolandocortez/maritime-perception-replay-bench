@@ -1,0 +1,35 @@
+# Local training recipe for Singapore Maritime Dataset ObjectGT conversion.
+# Raw media and generated training data are intentionally not versioned.
+
+dataset:
+  source_name: "Singapore Maritime Dataset"
+  raw_root: "data/raw/smd/kaggle/extracted"
+  output_root: "data/training/smd_yolo"
+  include_modalities:
+    - "VIS_Onshore"
+    - "VIS_Onboard"
+  excluded_by_default:
+    - "NIR"
+
+conversion:
+  script: "scripts/convert_smd_objectgt_to_yolo.py"
+  class_map:
+    "Vessel/ship": 0
+  names:
+    0: "boat"
+  default_frame_stride: 10
+  validation_fraction: 0.2
+  split_policy: "video_level_random_seed_42"
+  notes:
+    - "ObjectGT BB is interpreted as [x, y, width, height]."
+    - "Generated frames and labels stay under data/training/ and are ignored by Git."
+
+training:
+  baseline_model: "yolo11s.pt"
+  imgsz: 960
+  epochs: 80
+  batch: 4
+  gpu_preferred: true
+  outputs_ignored:
+    - "runs/detect/"
+    - "models/trained/"

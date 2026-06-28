@@ -92,3 +92,9 @@ demo/screenshots/
 
 # Personal/private project notes
 /personal_notes/
+
+# Local training datasets and outputs
+/data/training/
+/runs/detect/
+/models/checkpoints/
+/models/trained/
