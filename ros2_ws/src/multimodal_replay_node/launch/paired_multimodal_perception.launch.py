@@ -19,6 +19,7 @@ def generate_launch_description():
     tracks_topic = LaunchConfiguration("tracks_topic")
     perception_overlay_topic = LaunchConfiguration("perception_overlay_topic")
     status_overlay_topic = LaunchConfiguration("status_overlay_topic")
+    overlay_max_sync_delta_ms = LaunchConfiguration("overlay_max_sync_delta_ms")
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -41,6 +42,7 @@ def generate_launch_description():
         DeclareLaunchArgument("tracks_topic", default_value="/multimodal/tracks"),
         DeclareLaunchArgument("perception_overlay_topic", default_value="/multimodal/video/perception_overlay"),
         DeclareLaunchArgument("status_overlay_topic", default_value="/multimodal/video/status_overlay"),
+        DeclareLaunchArgument("overlay_max_sync_delta_ms", default_value="2000.0"),
 
         LogInfo(msg=[
             "[paired_multimodal_perception] manifest=", manifest,
@@ -128,7 +130,7 @@ def generate_launch_description():
                 "draw_tracks": True,
                 "draw_confidence": True,
                 "draw_track_age": True,
-                "max_sync_delta_ms": 300.0,
+                "max_sync_delta_ms": ParameterValue(overlay_max_sync_delta_ms, value_type=float),
                 "publish_on_image": True,
                 "log_every_n_frames": 25,
             }],

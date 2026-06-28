@@ -98,3 +98,6 @@ demo/screenshots/
 /runs/detect/
 /models/checkpoints/
 /models/trained/
+
+# Local trained model outputs
+/models/trained/
