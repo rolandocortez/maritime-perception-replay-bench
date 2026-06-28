@@ -157,7 +157,7 @@ def main():
     mp4 = out_dir / "multimodal_replay_demo.mp4"
     gif = assets_dir / "multimodal_replay_demo.gif"
     preview = assets_dir / "multimodal_replay_demo_preview.jpg"
-    panel_png = assets_dir / "multimodal_fusion_panel.png"
+    panel_png = out_dir / "multimodal_fusion_panel.png"
 
     writer = cv2.VideoWriter(str(silent), cv2.VideoWriter_fourcc(*"mp4v"), args.output_fps, (args.width, out_h))
     degrade_win = parse_window(args.degrade_window)
