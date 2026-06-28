@@ -44,9 +44,6 @@ The current demo uses a small local HearMyShip sample, a YOLO detector first tra
 
 The GIF above is rendered offline from the same local manifest, trained detector, video sample, and audio sample used by the ROS2 replay path. This keeps the public demo frame-aligned while the ROS2 graph remains available for topic-level debugging, metrics, and fault-injection experiments.
 
-<p align="center">
-  <img src="assets/readme/multimodal_fusion_panel.png" alt="Visual and acoustic fusion panel" width="860">
-</p>
 
 Planned full-audio demo: export `demo/video/multimodal_replay_demo.mp4`, upload it as an unlisted video, and link it here with dataset attribution.
 
